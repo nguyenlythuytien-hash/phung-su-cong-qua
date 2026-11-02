@@ -140,18 +140,18 @@
         <!-- KHO TƯƠNG TÁC: GÕ MÕ & NGÂN CHUÔNG -->
         <section class="bg-[#1C120C] border border-[#3D2C1E] rounded-2xl p-6 shadow-xl text-center space-y-4">
             <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Tịnh Tâm & Tích Phước</h3>
-            <p class="text-xs text-gray-400">Nhấp vào Mõ gỗ hoặc Chuông đồng để gõ mõ tụng kinh và tích lũy công đức giải tỏa căng thẳng.</p>
+            <p class="text-xs text-gray-400">Nhấp vào Mõ gỗ hoặc Chuông đồng để gõ mõ tụng kinh và tích lũy công đức.</p>
 
             <div class="flex items-center justify-center gap-8 py-4">
                 <div class="relative flex flex-col items-center">
-                    <button id="btn-mo" onclick="tapMo(event)" class="w-28 h-28 rounded-2xl bg-[#2A1D15] border-2 border-[#5A422D] hover:border-[#D4AF37] flex items-center justify-center text-4xl text-[#D4AF37] shadow-lg active:scale-95 transition transform">
+                    <button onclick="tapMo(event)" class="w-28 h-28 rounded-2xl bg-[#2A1D15] border-2 border-[#5A422D] hover:border-[#D4AF37] flex items-center justify-center text-4xl text-[#D4AF37] shadow-lg active:scale-95 transition transform cursor-pointer">
                         🪵
                     </button>
                     <span class="text-xs font-semibold text-[#F3E5AB] mt-2">Gõ Mõ (+1 CĐ)</span>
                 </div>
 
                 <div class="relative flex flex-col items-center">
-                    <button id="btn-chuong" onclick="tapChuong(event)" class="w-28 h-28 rounded-2xl bg-[#2A1D15] border-2 border-[#5A422D] hover:border-[#D4AF37] flex items-center justify-center text-4xl text-[#FFE58F] shadow-lg active:scale-95 transition transform">
+                    <button onclick="tapChuong(event)" class="w-28 h-28 rounded-2xl bg-[#2A1D15] border-2 border-[#5A422D] hover:border-[#D4AF37] flex items-center justify-center text-4xl text-[#FFE58F] shadow-lg active:scale-95 transition transform cursor-pointer">
                         🔔
                     </button>
                     <span class="text-xs font-semibold text-[#F3E5AB] mt-2">Ngân Chuông (+2 CĐ)</span>
@@ -172,7 +172,7 @@
                     </div>
                     <div class="card-back absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#35251B] to-[#1C120C] rounded-2xl">
                         <p id="que-text" class="text-xs text-[#FFE58F] font-serif-custom italic mb-3">"Vạn pháp do duyên sinh, vạn pháp do duyên diệt."</p>
-                        <span id="que-reward" class="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-700/50">+50 Điểm Công Đức</span>
+                        <span class="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-700/50">+50 Điểm Công Đức</span>
                     </div>
                 </div>
             </div>
@@ -183,35 +183,34 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Mini-Game Công Quả & Lễ Phật</h3>
-                    <p class="text-xs text-gray-400">Tham gia tương tác trực tiếp để làm sạch chánh điện, soạn mâm chay và tích lũy công đức!</p>
+                    <p class="text-xs text-gray-400">Nhấn vào nhiệm vụ để mở bảng tương tác làm sạch, soạn mâm và tụng kinh!</p>
                 </div>
                 <span class="text-xs bg-[#2A1D15] text-[#D4AF37] border border-[#4E3928] px-3 py-1 rounded-full">Tương tác</span>
             </div>
 
             <div id="quest-list" class="space-y-3">
-                <!-- Rendered via JS -->
+                <!-- Rendered dynamically -->
             </div>
         </section>
 
-        <!-- KHU VỰC CHƠI MINI-GAME POPUP (Ẩn hiện khi bấm nhiệm vụ) -->
+        <!-- KHU VỰC CHƠI MINI-GAME POPUP -->
         <div id="minigame-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-[#1C120C] border-2 border-[#D4AF37] rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl relative">
-                <h3 id="mg-title" class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Tên Mini-Game</h3>
+                <h3 id="mg-title" class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Mini-Game</h3>
                 <p id="mg-desc" class="text-xs text-gray-300">Hướng dẫn chơi...</p>
 
-                <!-- Khu vực màn chơi tương tác -->
                 <div id="mg-playarea" class="bg-[#2A1D15] border border-[#4E3928] rounded-xl h-48 flex flex-col items-center justify-center relative overflow-hidden select-none">
-                    <!-- Nội dung game động sẽ được chèn vào đây -->
+                    <!-- Khu vực tương tác trò chơi -->
                 </div>
 
                 <div class="flex justify-between items-center text-xs text-[#D4AF37]">
-                    <span id="mg-progress">Tiến độ: 0/10</span>
-                    <button onclick="closeMinigame()" class="px-4 py-1.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600">Đóng</button>
+                    <span id="mg-progress">Tiến độ: 0/5</span>
+                    <button onclick="closeMinigame()" class="px-4 py-1.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 cursor-pointer">Đóng</button>
                 </div>
             </div>
         </div>
 
-        <!-- BẢNG HUY HIỆU & ĐỔI THƯỞNG -->
+        <!-- BẢNG HUY HIỆU -->
         <section class="bg-[#1C120C] border border-[#3D2C1E] rounded-2xl p-6 shadow-xl space-y-4">
             <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Huy Hiệu Công Đức</h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="badge-list"></div>
@@ -219,7 +218,7 @@
 
     </main>
 
-    <!-- FOOTER BAR -->
+    <!-- FOOTER -->
     <footer class="fixed bottom-0 left-0 right-0 z-30 bg-[#1C120C]/95 border-t border-[#3D2C1E] py-3 text-center text-xs text-gray-400">
         <p>Phụng Sự Số © 2026 — Nam Mô Bổn Sư Thích Ca Mâu Ni Phật</p>
     </footer>
@@ -271,9 +270,9 @@
         const ranks = ['Tập Sự Phụng Sự', 'Đồng Chân Tinh Tấn', 'Bồ Đề Tâm Kính', 'Vô Lượng Phước Điền'];
 
         const quests = [
-            { id: 1, title: "Quét dọn Chánh Điện (Mini-game Tương Tác)", type: "sweep", rewardMerit: 20, rewardExp: 40, target: 8, done: false },
-            { id: 2, title: "Phụ bếp Trai đường (Hứng rau củ chay)", type: "catch", rewardMerit: 25, rewardExp: 50, target: 6, done: false },
-            { id: 3, title: "Tụng kinh niệm Phật (Gõ mõ nhịp nhàng)", type: "tap", rewardMerit: 30, rewardExp: 60, target: 10, done: false }
+            { id: 1, title: "Quét dọn Chánh Điện", type: "sweep", rewardMerit: 20, rewardExp: 40, target: 5, done: false },
+            { id: 2, title: "Phụ bếp Trai đường", type: "catch", rewardMerit: 25, rewardExp: 50, target: 5, done: false },
+            { id: 3, title: "Tụng kinh niệm Phật", type: "tap", rewardMerit: 30, rewardExp: 60, target: 8, done: false }
         ];
 
         const queList = [
@@ -347,14 +346,13 @@
                         <h4 class="font-serif-custom text-sm font-bold text-[#F3E5AB]">${q.title}</h4>
                         <span class="text-xs text-[#D4AF37]">+${q.rewardMerit} Công Đức | +${q.rewardExp} EXP</span>
                     </div>
-                    <button onclick="startMinigame(${q.id})" class="px-4 py-2 bg-[#D4AF37] text-[#140E0A] font-bold text-xs rounded-lg hover:bg-[#FFE58F] transition ${q.done ? 'opacity-50 cursor-not-allowed' : ''}">
-                        ${q.done ? 'Đã hoàn thành' : 'Chơi & Làm'}
+                    <button onclick="startMinigame(${q.id})" class="px-4 py-2 bg-[#D4AF37] text-[#140E0A] font-bold text-xs rounded-lg hover:bg-[#FFE58F] transition cursor-pointer ${q.done ? 'opacity-50 cursor-not-allowed' : ''}">
+                        ${q.done ? 'Đã hoàn thành' : 'Chơi Ngay'}
                     </button>
                 </div>
             `).join('');
         }
 
-        // --- HỆ THỐNG MINI-GAME TƯƠNG TÁC ---
         let currentQuest = null;
         let currentGameScore = 0;
 
@@ -375,19 +373,19 @@
             area.innerHTML = '';
 
             if (currentQuest.type === 'sweep') {
-                document.getElementById('mg-desc').innerText = `Hãy click vào các vết bụi bẩn xuất hiện để quét sạch chánh điện! (${currentGameScore}/${currentQuest.target})`;
+                document.getElementById('mg-desc').innerText = `Bấm vào lá rơi để dọn sạch chánh điện!`;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
                 spawnDust();
             } else if (currentQuest.type === 'catch') {
-                document.getElementById('mg-desc').innerText = `Click vào các rau củ quả chay rơi xuống để soạn mâm! (${currentGameScore}/${currentQuest.target})`;
+                document.getElementById('mg-desc').innerText = `Bấm vào rau củ quả chay xuất hiện!`;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
                 spawnVeggie();
             } else if (currentQuest.type === 'tap') {
-                document.getElementById('mg-desc').innerText = `Gõ mõ liên tục theo nhịp để tụng kinh! (${currentGameScore}/${currentQuest.target})`;
+                document.getElementById('mg-desc').innerText = `Gõ vào mõ liên tục để tụng kinh!`;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
                 
                 const btn = document.createElement('button');
-                btn.className = 'w-20 h-20 rounded-full bg-[#D4AF37] text-[#140E0A] text-3xl shadow-lg active:scale-90 transition flex items-center justify-center';
+                btn.className = 'w-20 h-20 rounded-full bg-[#D4AF37] text-[#140E0A] text-3xl shadow-lg active:scale-90 transition flex items-center justify-center cursor-pointer';
                 btn.innerHTML = '🪵';
                 btn.onclick = (e) => {
                     playSound('mo');
@@ -401,19 +399,18 @@
             }
         }
 
-        // Mini-game 1: Quét bụi bẩn
         function spawnDust() {
             if (!currentQuest || currentQuest.done || document.getElementById('minigame-modal').classList.contains('hidden')) return;
             const area = document.getElementById('mg-playarea');
             area.innerHTML = '';
 
             const dust = document.createElement('div');
-            dust.className = 'absolute text-2xl cursor-pointer animate-bounce';
+            dust.className = 'absolute text-3xl cursor-pointer animate-bounce';
             dust.innerHTML = '🍂';
-            dust.style.left = `${Math.random() * 70 + 15}%`;
-            dust.style.top = `${Math.random() * 60 + 20}%`;
+            dust.style.left = `${Math.random() * 70 + 10}%`;
+            dust.style.top = `${Math.random() * 60 + 15}%`;
 
-            dust.onclick = (e) => {
+            dust.onclick = () => {
                 playSound('mo');
                 currentGameScore++;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
@@ -426,7 +423,6 @@
             area.appendChild(dust);
         }
 
-        // Mini-game 2: Hứng rau củ
         function spawnVeggie() {
             if (!currentQuest || currentQuest.done || document.getElementById('minigame-modal').classList.contains('hidden')) return;
             const area = document.getElementById('mg-playarea');
@@ -436,10 +432,10 @@
             const veg = document.createElement('div');
             veg.className = 'absolute text-3xl cursor-pointer transition transform hover:scale-125';
             veg.innerHTML = veggies[Math.floor(Math.random() * veggies.length)];
-            veg.style.left = `${Math.random() * 75 + 10}%`;
+            veg.style.left = `${Math.random() * 70 + 10}%`;
             veg.style.top = `${Math.random() * 60 + 15}%`;
 
-            veg.onclick = (e) => {
+            veg.onclick = () => {
                 playSound('success');
                 currentGameScore++;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
@@ -456,7 +452,7 @@
             currentQuest.done = true;
             playSound('success');
             addMerit(currentQuest.rewardMerit, null);
-            alert(`Nam Mô A Di Đà Phật! Bạn đã hoàn thành xuất sắc nhiệm vụ: ${currentQuest.title} và nhận +${currentQuest.rewardMerit} Công Đức!`);
+            alert(`Nam Mô A Di Đà Phật! Hoàn thành nhiệm vụ: ${currentQuest.title} (+${currentQuest.rewardMerit} Công Đức)!`);
             closeMinigame();
             updateUI();
         }
