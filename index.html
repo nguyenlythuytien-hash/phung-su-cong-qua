@@ -36,7 +36,7 @@
             10% { opacity: 0.8; }
             100% { transform: translateY(105vh) rotate(360deg) scale(1.2); opacity: 0; }
         }
-        /* Floating Text (+ Công đức) */
+        /* Floating Text */
         .float-text {
             position: absolute;
             color: #FFE58F;
@@ -85,7 +85,6 @@
                 </div>
             </div>
 
-            <!-- Volume Control -->
             <button id="btn-sound" onclick="toggleSound()" class="p-2.5 rounded-full bg-[#2A1D15] border border-[#4E3928] text-[#D4AF37] hover:bg-[#3D2C1E] transition cursor-pointer">
                 <i id="sound-icon" class="fa-solid fa-volume-high"></i>
             </button>
@@ -95,7 +94,7 @@
     <!-- Main Container -->
     <main class="relative z-10 max-w-4xl mx-auto px-4 py-6 space-y-6 pb-24">
 
-        <!-- THÔNG TIN PHẬT TỬ & CẤP BẬC -->
+        <!-- THÔNG TIN PHẬT TỬ -->
         <section class="bg-gradient-to-r from-[#2A1D15] via-[#35251B] to-[#2A1D15] border border-[#5A422D] rounded-2xl p-5 shadow-xl relative overflow-hidden">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex items-center space-x-4 w-full md:w-auto">
@@ -116,14 +115,12 @@
                     </div>
                 </div>
 
-                <!-- Thống kê Point & EXP -->
                 <div class="w-full md:w-64 space-y-2">
                     <div class="flex items-center justify-between text-xs bg-[#1C120C]/80 px-3 py-1.5 rounded-lg border border-[#4E3928]">
                         <span class="text-[#C8B6A6]"><i class="fa-solid fa-star text-[#D4AF37] mr-1"></i>Công Đức:</span>
                         <span class="font-bold text-[#FFE58F] text-sm" id="merit-points">0</span>
                     </div>
 
-                    <!-- EXP Bar -->
                     <div class="space-y-1">
                         <div class="flex justify-between text-[11px] text-gray-400 font-medium">
                             <span>Tiến trình Tinh Tấn</span>
@@ -137,7 +134,7 @@
             </div>
         </section>
 
-        <!-- KHO TƯƠNG TÁC: GÕ MÕ & NGÂN CHUÔNG -->
+        <!-- GÕ MÕ & NGÂN CHUÔNG -->
         <section class="bg-[#1C120C] border border-[#3D2C1E] rounded-2xl p-6 shadow-xl text-center space-y-4">
             <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Tịnh Tâm & Tích Phước</h3>
             <p class="text-xs text-gray-400">Nhấp vào Mõ gỗ hoặc Chuông đồng chuẩn âm thanh tự viện để tịnh tâm.</p>
@@ -159,7 +156,7 @@
             </div>
         </section>
 
-        <!-- GIEO QUẺ BỒ ĐỀ HÀNG NGÀY -->
+        <!-- GIEO QUẺ BỒ ĐỀ -->
         <section class="bg-[#1C120C] border border-[#3D2C1E] rounded-2xl p-6 shadow-xl text-center space-y-4">
             <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Gieo Quẻ Bồ Đề Hàng Ngày</h3>
             <p class="text-xs text-gray-400">Mỗi ngày rút 1 thẻ quẻ để nhận lời Phật dạy trí tuệ & thưởng điểm phước.</p>
@@ -178,30 +175,26 @@
             </div>
         </section>
 
-        <!-- NHIỆM VỤ CÔNG QUẢ & LỄ PHẬT (ĐẦY ĐỦ CÁC HOẠT ĐỘNG) -->
+        <!-- NHIỆM VỤ CÔNG QUẢ & MINI-GAME -->
         <section class="bg-[#1C120C] border border-[#3D2C1E] rounded-2xl p-6 shadow-xl space-y-4">
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Nhiệm Vụ Công Quả & Lễ Phật</h3>
-                    <p class="text-xs text-gray-400">Nhấn "Thực hiện" để tham gia mini-game tương tác tích lũy công đức và EXP.</p>
+                    <p class="text-xs text-gray-400">Nhấn "Thực hiện" để tham gia tương tác tích lũy công đức và EXP.</p>
                 </div>
                 <span class="text-xs bg-[#2A1D15] text-[#D4AF37] border border-[#4E3928] px-3 py-1 rounded-full">Tinh Tấn</span>
             </div>
 
-            <div id="quest-list" class="space-y-3">
-                <!-- Rendered dynamically -->
-            </div>
+            <div id="quest-list" class="space-y-3"></div>
         </section>
 
-        <!-- KHU VỰC CHƠI MINI-GAME POPUP -->
+        <!-- MINI-GAME POPUP -->
         <div id="minigame-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-[#1C120C] border-2 border-[#D4AF37] rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl relative">
                 <h3 id="mg-title" class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Mini-Game</h3>
                 <p id="mg-desc" class="text-xs text-gray-300">Hướng dẫn chơi...</p>
 
-                <div id="mg-playarea" class="bg-[#2A1D15] border border-[#4E3928] rounded-xl h-48 flex flex-col items-center justify-center relative overflow-hidden select-none">
-                    <!-- Khu vực tương tác trò chơi -->
-                </div>
+                <div id="mg-playarea" class="bg-[#2A1D15] border border-[#4E3928] rounded-xl h-48 flex flex-col items-center justify-center relative overflow-hidden select-none"></div>
 
                 <div class="flex justify-between items-center text-xs text-[#D4AF37]">
                     <span id="mg-progress">Tiến độ: 0/5</span>
@@ -210,7 +203,7 @@
             </div>
         </div>
 
-        <!-- BẢNG HUY HIỆU -->
+        <!-- HUY HIỆU -->
         <section class="bg-[#1C120C] border border-[#3D2C1E] rounded-2xl p-6 shadow-xl space-y-4">
             <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Huy Hiệu Công Đức</h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="badge-list"></div>
@@ -218,7 +211,6 @@
 
     </main>
 
-    <!-- FOOTER -->
     <footer class="fixed bottom-0 left-0 right-0 z-30 bg-[#1C120C]/95 border-t border-[#3D2C1E] py-3 text-center text-xs text-gray-400">
         <p>Phụng Sự Số © 2026 — Nam Mô Bổn Sư Thích Ca Mâu Ni Phật</p>
     </footer>
@@ -231,16 +223,13 @@
         function playSound(type) {
             if (!soundEnabled) return;
             try {
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
+                if (audioCtx.state === 'suspended') audioCtx.resume();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
 
                 if (type === 'mo') {
-                    // Âm thanh Mõ gỗ trầm ấm, chắc gọn
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(220, audioCtx.currentTime);
                     osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.12);
@@ -248,7 +237,6 @@
                     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
                     osc.start(); osc.stop(audioCtx.currentTime + 0.15);
                 } else if (type === 'chuong') {
-                    // Âm thanh Chuông đồng ngân vang sâu, nhiều tầng âm bồi (harmonic)
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(440, audioCtx.currentTime);
                     osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 2.2);
@@ -256,7 +244,6 @@
                     gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.5);
                     osc.start(); osc.stop(audioCtx.currentTime + 2.5);
                 } else if (type === 'success') {
-                    // Chuông thanh khiết báo hoàn thành nhiệm vụ
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(659.25, audioCtx.currentTime);
                     osc.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + 1.2);
@@ -309,9 +296,7 @@
             gameState.exp += amount * 2;
             checkLevelUp();
             updateUI();
-            if (event) {
-                showFloatText(`+${amount} Công Đức`, event.clientX, event.clientY);
-            }
+            if (event) showFloatText(`+${amount} Công Đức`, event.clientX, event.clientY);
         }
 
         function tapMo(e) { playSound('mo'); addMerit(1, e); }
@@ -379,7 +364,6 @@
 
             document.getElementById('minigame-modal').classList.remove('hidden');
             document.getElementById('mg-title').innerText = q.title;
-            
             setupGamePlayArea();
         }
 
@@ -396,11 +380,11 @@
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
                 spawnVeggie();
             } else if (currentQuest.type === 'parking') {
-                document.getElementById('mg-desc').innerText = `Sắp xếp xe bằng cách nhấp vào biểu tượng xe ô tô/xe máy!`;
+                document.getElementById('mg-desc').innerText = `Sắp xếp xe bằng cách nhấp vào phương tiện!`;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
                 spawnCar();
             } else if (currentQuest.type === 'bow') {
-                document.getElementById('mg-desc').innerText = `Nhấp vào tượng Phật/Bông sen để thực hiện Lạy Phật sám hối!`;
+                document.getElementById('mg-desc').innerText = `Nhấp vào biểu tượng hoa sen để lạy Phật sám hối!`;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
                 
                 const btn = document.createElement('button');
@@ -410,9 +394,7 @@
                     playSound('chuong');
                     currentGameScore++;
                     document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
-                    if (currentGameScore >= currentQuest.target) {
-                        completeCurrentQuest();
-                    }
+                    if (currentGameScore >= currentQuest.target) completeCurrentQuest();
                 };
                 area.appendChild(btn);
             } else if (currentQuest.type === 'tap') {
@@ -426,9 +408,7 @@
                     playSound('mo');
                     currentGameScore++;
                     document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
-                    if (currentGameScore >= currentQuest.target) {
-                        completeCurrentQuest();
-                    }
+                    if (currentGameScore >= currentQuest.target) completeCurrentQuest();
                 };
                 area.appendChild(btn);
             }
@@ -438,22 +418,17 @@
             if (!currentQuest || currentQuest.done || document.getElementById('minigame-modal').classList.contains('hidden')) return;
             const area = document.getElementById('mg-playarea');
             area.innerHTML = '';
-
             const dust = document.createElement('div');
             dust.className = 'absolute text-3xl cursor-pointer animate-bounce';
             dust.innerHTML = '🍂';
             dust.style.left = `${Math.random() * 70 + 10}%`;
             dust.style.top = `${Math.random() * 60 + 15}%`;
-
             dust.onclick = () => {
                 playSound('mo');
                 currentGameScore++;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
-                if (currentGameScore >= currentQuest.target) {
-                    completeCurrentQuest();
-                } else {
-                    spawnDust();
-                }
+                if (currentGameScore >= currentQuest.target) completeCurrentQuest();
+                else spawnDust();
             };
             area.appendChild(dust);
         }
@@ -462,23 +437,18 @@
             if (!currentQuest || currentQuest.done || document.getElementById('minigame-modal').classList.contains('hidden')) return;
             const area = document.getElementById('mg-playarea');
             area.innerHTML = '';
-
             const veggies = ['🥦', '🥕', '🍎', '🥬'];
             const veg = document.createElement('div');
             veg.className = 'absolute text-3xl cursor-pointer transition transform hover:scale-125';
             veg.innerHTML = veggies[Math.floor(Math.random() * veggies.length)];
             veg.style.left = `${Math.random() * 70 + 10}%`;
             veg.style.top = `${Math.random() * 60 + 15}%`;
-
             veg.onclick = () => {
                 playSound('success');
                 currentGameScore++;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
-                if (currentGameScore >= currentQuest.target) {
-                    completeCurrentQuest();
-                } else {
-                    spawnVeggie();
-                }
+                if (currentGameScore >= currentQuest.target) completeCurrentQuest();
+                else spawnVeggie();
             };
             area.appendChild(veg);
         }
@@ -487,23 +457,18 @@
             if (!currentQuest || currentQuest.done || document.getElementById('minigame-modal').classList.contains('hidden')) return;
             const area = document.getElementById('mg-playarea');
             area.innerHTML = '';
-
             const vehicles = ['🚗', '🛵', '🚲', '🚙'];
             const veh = document.createElement('div');
             veh.className = 'absolute text-3xl cursor-pointer transition transform hover:scale-125';
             veh.innerHTML = vehicles[Math.floor(Math.random() * vehicles.length)];
             veh.style.left = `${Math.random() * 70 + 10}%`;
             veh.style.top = `${Math.random() * 60 + 15}%`;
-
             veh.onclick = () => {
                 playSound('success');
                 currentGameScore++;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
-                if (currentGameScore >= currentQuest.target) {
-                    completeCurrentQuest();
-                } else {
-                    spawnCar();
-                }
+                if (currentGameScore >= currentQuest.target) completeCurrentQuest();
+                else spawnCar();
             };
             area.appendChild(veh);
         }
@@ -526,7 +491,6 @@
             if (gameState.isCardFlipped) return;
             gameState.isCardFlipped = true;
             document.getElementById('que-card').classList.add('card-flipped');
-
             const randomText = queList[Math.floor(Math.random() * queList.length)];
             document.getElementById('que-text').innerText = `"${randomText}"`;
             playSound('chuong');
