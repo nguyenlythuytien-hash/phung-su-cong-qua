@@ -137,8 +137,6 @@
   .instrument { cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation; position: relative; }
   .instrument svg { transition: transform .12s ease; transform-origin: 50% 70%; }
   .instrument:active svg { transform: scale(.95); }
-  .mo-hit { animation: mo-hit .22s ease-out; }
-  @keyframes mo-hit { 0% { transform: scale(1); } 35% { transform: scale(.92) rotate(-2deg); } 100% { transform: scale(1); } }
   .mallet { transform-origin: 85% 15%; transition: transform .08s ease-out; }
   .mallet.strike { transform: rotate(-24deg); }
   .striker { transition: transform .12s ease-out; }
@@ -445,7 +443,7 @@
 
     <div class="flex justify-between items-center text-xs text-gold">
       <span id="mgProgress" class="font-semibold">Tiến độ: 0/5</span>
-      <button onclick="closeMinigame()" class="btn-ghost px-4 py-1.5 rounded-lg">Đóng</button>
+      <button onclick="closeMinigame()" class="btn-ghost px-4 py-1.5 rounded-lg cursor-pointer">Đóng</button>
     </div>
   </div>
 </div>
@@ -549,7 +547,6 @@
     
     const pct = Math.min(100, (state.exp / rankObj.need) * 100);
     document.getElementById('expFill').style.width = pct + '%';
-    document.getElementById('nextRank').innerText = `Còn ${Math.max(0, rankObj.need - state.exp)} EXP để thăng cấp`;
 
     renderQuests();
   }
@@ -601,10 +598,6 @@
     state.combo++;
     const rect = e.currentTarget.getBoundingClientRect();
     addMerit(1, 1, rect.left + rect.width/2, rect.top);
-    
-    const mallet = document.getElementById('mallet');
-    mallet.classList.add('strike');
-    setTimeout(() => mallet.classList.remove('strike'), 100);
   });
 
   document.getElementById('bellArea').addEventListener('click', (e) => {
@@ -613,10 +606,6 @@
     state.combo++;
     const rect = e.currentTarget.getBoundingClientRect();
     addMerit(1, 2, rect.left + rect.width/2, rect.top);
-
-    const striker = document.getElementById('striker');
-    striker.classList.add('strike');
-    setTimeout(() => striker.classList.remove('strike'), 120);
   });
 
   // Fortune drawing
@@ -645,12 +634,12 @@
   function renderQuests() {
     const list = document.getElementById('questList');
     list.innerHTML = state.quests.map(q => `
-      <div class="quest panel rounded-xl p-4 flex items-center justify-between gap-3 ${q.done ? 'done' : ''}">
+      <div class="panel rounded-xl p-4 flex items-center justify-between gap-3 ${q.done ? 'opacity-60' : ''}">
         <div>
           <h4 class="font-serif text-sm font-bold text-gold-pale">${q.title}</h4>
           <p class="text-xs text-cream/60 mt-0.5">+${q.rewardMerit} Công Đức · +${q.rewardExp} EXP</p>
         </div>
-        <button onclick="startMinigame(${q.id})" class="btn-gold px-4 py-2 rounded-lg text-xs font-semibold ${q.done ? 'opacity-50 cursor-not-allowed' : ''}" ${q.done ? 'disabled' : ''}>
+        <button onclick="startMinigame(${q.id})" class="btn-gold px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer ${q.done ? 'opacity-50 cursor-not-allowed' : ''}" ${q.done ? 'disabled' : ''}>
           ${q.done ? 'Đã hoàn thành' : 'Thực hiện'}
         </button>
       </div>
@@ -810,40 +799,8 @@
     showToast(soundEnabled ? "Đã bật âm thanh" : "Đã tắt âm thanh");
   });
 
-  // Petals generator
-  function initPetals() {
-    const container = document.getElementById('petals');
-    const count = 14;
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('div');
-      p.className = 'petal';
-      p.style.left = `${Math.random() * 100}vw`;
-      p.style.animationDuration = `${8 + Math.random() * 7}s`;
-      p.style.animationDelay = `${Math.random() * 8}s`;
-      p.style.setProperty('--o', `${0.4 + Math.random() * 0.5}`);
-      p.style.setProperty('--drift', `${(Math.random() - 0.5) * 80}px`);
-
-      const inner = document.createElement('i');
-      inner.style.animationDuration = `${3 + Math.random() * 3}s`;
-      inner.innerHTML = `<svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M7 0C7 5 2 8 0 11C3 15 9 15 14 11C12 8 7 5 7 0Z" fill="#E7A3A8" fill-opacity="0.65"/></svg>`;
-      p.appendChild(inner);
-      container.appendChild(p);
-    }
-  }
-
-  // Keyboard shortcuts
-  window.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (e.key === 'm' || e.key === 'M') {
-      document.getElementById('moArea').click();
-    } else if (e.key === 'c' || e.key === 'C') {
-      document.getElementById('bellArea').click();
-    }
-  });
-
   // Init
   window.addEventListener('DOMContentLoaded', () => {
-    initPetals();
     updateUI();
   });
 </script>
