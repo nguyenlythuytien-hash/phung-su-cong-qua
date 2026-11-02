@@ -36,7 +36,7 @@
             10% { opacity: 0.8; }
             100% { transform: translateY(105vh) rotate(360deg) scale(1.2); opacity: 0; }
         }
-        /* Floating Text (+1 Công đức) */
+        /* Floating Text (+ Công đức) */
         .float-text {
             position: absolute;
             color: #FFE58F;
@@ -86,7 +86,7 @@
             </div>
 
             <!-- Volume Control -->
-            <button id="btn-sound" onclick="toggleSound()" class="p-2.5 rounded-full bg-[#2A1D15] border border-[#4E3928] text-[#D4AF37] hover:bg-[#3D2C1E] transition">
+            <button id="btn-sound" onclick="toggleSound()" class="p-2.5 rounded-full bg-[#2A1D15] border border-[#4E3928] text-[#D4AF37] hover:bg-[#3D2C1E] transition cursor-pointer">
                 <i id="sound-icon" class="fa-solid fa-volume-high"></i>
             </button>
         </div>
@@ -110,7 +110,7 @@
                     <div>
                         <div class="flex items-center space-x-2">
                             <h2 class="font-serif-custom text-lg font-bold text-[#F3E5AB]" id="user-name">Phật tử Diệu Tâm</h2>
-                            <button onclick="editName()" class="text-xs text-[#D4AF37] hover:underline"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="editName()" class="text-xs text-[#D4AF37] hover:underline cursor-pointer"><i class="fa-solid fa-pen-to-square"></i></button>
                         </div>
                         <p class="text-xs text-[#D4AF37] font-semibold mt-0.5" id="user-rank">Danh hiệu: Tập Sự Phụng Sự</p>
                     </div>
@@ -140,7 +140,7 @@
         <!-- KHO TƯƠNG TÁC: GÕ MÕ & NGÂN CHUÔNG -->
         <section class="bg-[#1C120C] border border-[#3D2C1E] rounded-2xl p-6 shadow-xl text-center space-y-4">
             <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Tịnh Tâm & Tích Phước</h3>
-            <p class="text-xs text-gray-400">Nhấp vào Mõ gỗ hoặc Chuông đồng để gõ mõ tụng kinh và tích lũy công đức.</p>
+            <p class="text-xs text-gray-400">Nhấp vào Mõ gỗ hoặc Chuông đồng chuẩn âm thanh tự viện để tịnh tâm.</p>
 
             <div class="flex items-center justify-center gap-8 py-4">
                 <div class="relative flex flex-col items-center">
@@ -178,14 +178,14 @@
             </div>
         </section>
 
-        <!-- NHIỆM VỤ CÔNG QUẢ & MINI-GAME TƯƠNG TÁC -->
+        <!-- NHIỆM VỤ CÔNG QUẢ & LỄ PHẬT (ĐẦY ĐỦ CÁC HOẠT ĐỘNG) -->
         <section class="bg-[#1C120C] border border-[#3D2C1E] rounded-2xl p-6 shadow-xl space-y-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Mini-Game Công Quả & Lễ Phật</h3>
-                    <p class="text-xs text-gray-400">Nhấn vào nhiệm vụ để mở bảng tương tác làm sạch, soạn mâm và tụng kinh!</p>
+                    <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Nhiệm Vụ Công Quả & Lễ Phật</h3>
+                    <p class="text-xs text-gray-400">Nhấn "Thực hiện" để tham gia mini-game tương tác tích lũy công đức và EXP.</p>
                 </div>
-                <span class="text-xs bg-[#2A1D15] text-[#D4AF37] border border-[#4E3928] px-3 py-1 rounded-full">Tương tác</span>
+                <span class="text-xs bg-[#2A1D15] text-[#D4AF37] border border-[#4E3928] px-3 py-1 rounded-full">Tinh Tấn</span>
             </div>
 
             <div id="quest-list" class="space-y-3">
@@ -231,25 +231,38 @@
         function playSound(type) {
             if (!soundEnabled) return;
             try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
 
                 if (type === 'mo') {
+                    // Âm thanh Mõ gỗ trầm ấm, chắc gọn
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(180, audioCtx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(90, audioCtx.currentTime + 0.15);
-                    gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-                } else if (type === 'chuong' || type === 'success') {
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.12);
+                    gain.gain.setValueAtTime(0.9, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+                } else if (type === 'chuong') {
+                    // Âm thanh Chuông đồng ngân vang sâu, nhiều tầng âm bồi (harmonic)
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(type === 'success' ? 523.25 : 320, audioCtx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 1.5);
-                    gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
-                    osc.start(); osc.stop(audioCtx.currentTime + 1.8);
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 2.2);
+                    gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.5);
+                    osc.start(); osc.stop(audioCtx.currentTime + 2.5);
+                } else if (type === 'success') {
+                    // Chuông thanh khiết báo hoàn thành nhiệm vụ
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + 1.2);
+                    gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+                    osc.start(); osc.stop(audioCtx.currentTime + 1.5);
                 }
             } catch (e) {}
         }
@@ -272,7 +285,9 @@
         const quests = [
             { id: 1, title: "Quét dọn Chánh Điện", type: "sweep", rewardMerit: 20, rewardExp: 40, target: 5, done: false },
             { id: 2, title: "Phụ bếp Trai đường", type: "catch", rewardMerit: 25, rewardExp: 50, target: 5, done: false },
-            { id: 3, title: "Tụng kinh niệm Phật", type: "tap", rewardMerit: 30, rewardExp: 60, target: 8, done: false }
+            { id: 3, title: "Hỗ trợ bãi xe", type: "parking", rewardMerit: 15, rewardExp: 30, target: 5, done: false },
+            { id: 4, title: "Lạy Phật sám hối", type: "bow", rewardMerit: 30, rewardExp: 60, target: 6, done: false },
+            { id: 5, title: "Tụng kinh niệm Phật", type: "tap", rewardMerit: 35, rewardExp: 70, target: 8, done: false }
         ];
 
         const queList = [
@@ -341,13 +356,13 @@
         function renderQuests() {
             const container = document.getElementById('quest-list');
             container.innerHTML = quests.map(q => `
-                <div class="bg-[#2A1D15] border border-[#4E3928] rounded-xl p-4 flex items-center justify-between">
+                <div class="bg-[#2A1D15] border border-[#4E3928] rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-3">
                     <div>
                         <h4 class="font-serif-custom text-sm font-bold text-[#F3E5AB]">${q.title}</h4>
                         <span class="text-xs text-[#D4AF37]">+${q.rewardMerit} Công Đức | +${q.rewardExp} EXP</span>
                     </div>
                     <button onclick="startMinigame(${q.id})" class="px-4 py-2 bg-[#D4AF37] text-[#140E0A] font-bold text-xs rounded-lg hover:bg-[#FFE58F] transition cursor-pointer ${q.done ? 'opacity-50 cursor-not-allowed' : ''}">
-                        ${q.done ? 'Đã hoàn thành' : 'Chơi Ngay'}
+                        ${q.done ? 'Đã hoàn thành' : 'Thực hiện'}
                     </button>
                 </div>
             `).join('');
@@ -373,21 +388,41 @@
             area.innerHTML = '';
 
             if (currentQuest.type === 'sweep') {
-                document.getElementById('mg-desc').innerText = `Bấm vào lá rơi để dọn sạch chánh điện!`;
+                document.getElementById('mg-desc').innerText = `Nhấp vào lá rác xuất hiện để quét sạch chánh điện!`;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
                 spawnDust();
             } else if (currentQuest.type === 'catch') {
-                document.getElementById('mg-desc').innerText = `Bấm vào rau củ quả chay xuất hiện!`;
+                document.getElementById('mg-desc').innerText = `Nhấp vào rau củ quả chay để soạn mâm!`;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
                 spawnVeggie();
-            } else if (currentQuest.type === 'tap') {
-                document.getElementById('mg-desc').innerText = `Gõ vào mõ liên tục để tụng kinh!`;
+            } else if (currentQuest.type === 'parking') {
+                document.getElementById('mg-desc').innerText = `Sắp xếp xe bằng cách nhấp vào biểu tượng xe ô tô/xe máy!`;
+                document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
+                spawnCar();
+            } else if (currentQuest.type === 'bow') {
+                document.getElementById('mg-desc').innerText = `Nhấp vào tượng Phật/Bông sen để thực hiện Lạy Phật sám hối!`;
                 document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
                 
                 const btn = document.createElement('button');
-                btn.className = 'w-20 h-20 rounded-full bg-[#D4AF37] text-[#140E0A] text-3xl shadow-lg active:scale-90 transition flex items-center justify-center cursor-pointer';
+                btn.className = 'w-20 h-20 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#996515] text-[#140E0A] text-3xl shadow-lg active:scale-90 transition flex items-center justify-center cursor-pointer border-2 border-[#FFE58F]';
+                btn.innerHTML = '🪷';
+                btn.onclick = () => {
+                    playSound('chuong');
+                    currentGameScore++;
+                    document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
+                    if (currentGameScore >= currentQuest.target) {
+                        completeCurrentQuest();
+                    }
+                };
+                area.appendChild(btn);
+            } else if (currentQuest.type === 'tap') {
+                document.getElementById('mg-desc').innerText = `Gõ vào mõ nhịp nhàng để tụng kinh!`;
+                document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
+                
+                const btn = document.createElement('button');
+                btn.className = 'w-20 h-20 rounded-full bg-[#2A1D15] border-2 border-[#D4AF37] text-[#D4AF37] text-3xl shadow-lg active:scale-90 transition flex items-center justify-center cursor-pointer';
                 btn.innerHTML = '🪵';
-                btn.onclick = (e) => {
+                btn.onclick = () => {
                     playSound('mo');
                     currentGameScore++;
                     document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
@@ -446,6 +481,31 @@
                 }
             };
             area.appendChild(veg);
+        }
+
+        function spawnCar() {
+            if (!currentQuest || currentQuest.done || document.getElementById('minigame-modal').classList.contains('hidden')) return;
+            const area = document.getElementById('mg-playarea');
+            area.innerHTML = '';
+
+            const vehicles = ['🚗', '🛵', '🚲', '🚙'];
+            const veh = document.createElement('div');
+            veh.className = 'absolute text-3xl cursor-pointer transition transform hover:scale-125';
+            veh.innerHTML = vehicles[Math.floor(Math.random() * vehicles.length)];
+            veh.style.left = `${Math.random() * 70 + 10}%`;
+            veh.style.top = `${Math.random() * 60 + 15}%`;
+
+            veh.onclick = () => {
+                playSound('success');
+                currentGameScore++;
+                document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
+                if (currentGameScore >= currentQuest.target) {
+                    completeCurrentQuest();
+                } else {
+                    spawnCar();
+                }
+            };
+            area.appendChild(veh);
         }
 
         function completeCurrentQuest() {
