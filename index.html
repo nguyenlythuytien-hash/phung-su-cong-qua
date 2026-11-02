@@ -200,4 +200,324 @@
                 <p id="mg-desc" class="text-xs text-gray-300">Hướng dẫn chơi...</p>
 
                 <!-- Khu vực màn chơi tương tác -->
-                <div id="mg-playarea" class="bg-[#2A1D15] border border-[#4E3928] rounded-xl h-48 flex flex-col items-center justify
+                <div id="mg-playarea" class="bg-[#2A1D15] border border-[#4E3928] rounded-xl h-48 flex flex-col items-center justify-center relative overflow-hidden select-none">
+                    <!-- Nội dung game động sẽ được chèn vào đây -->
+                </div>
+
+                <div class="flex justify-between items-center text-xs text-[#D4AF37]">
+                    <span id="mg-progress">Tiến độ: 0/10</span>
+                    <button onclick="closeMinigame()" class="px-4 py-1.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600">Đóng</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BẢNG HUY HIỆU & ĐỔI THƯỞNG -->
+        <section class="bg-[#1C120C] border border-[#3D2C1E] rounded-2xl p-6 shadow-xl space-y-4">
+            <h3 class="font-serif-custom text-xl font-bold text-[#F3E5AB]">Huy Hiệu Công Đức</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="badge-list"></div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER BAR -->
+    <footer class="fixed bottom-0 left-0 right-0 z-30 bg-[#1C120C]/95 border-t border-[#3D2C1E] py-3 text-center text-xs text-gray-400">
+        <p>Phụng Sự Số © 2026 — Nam Mô Bổn Sư Thích Ca Mâu Ni Phật</p>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let soundEnabled = true;
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'mo') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(90, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+                } else if (type === 'chuong' || type === 'success') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(type === 'success' ? 523.25 : 320, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 1.5);
+                    gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
+                    osc.start(); osc.stop(audioCtx.currentTime + 1.8);
+                }
+            } catch (e) {}
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-icon').className = soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-gray-500';
+        }
+
+        let gameState = {
+            name: 'Phật tử Diệu Tâm',
+            merit: 0,
+            exp: 0,
+            level: 1,
+            isCardFlipped: false
+        };
+
+        const ranks = ['Tập Sự Phụng Sự', 'Đồng Chân Tinh Tấn', 'Bồ Đề Tâm Kính', 'Vô Lượng Phước Điền'];
+
+        const quests = [
+            { id: 1, title: "Quét dọn Chánh Điện (Mini-game Tương Tác)", type: "sweep", rewardMerit: 20, rewardExp: 40, target: 8, done: false },
+            { id: 2, title: "Phụ bếp Trai đường (Hứng rau củ chay)", type: "catch", rewardMerit: 25, rewardExp: 50, target: 6, done: false },
+            { id: 3, title: "Tụng kinh niệm Phật (Gõ mõ nhịp nhàng)", type: "tap", rewardMerit: 30, rewardExp: 60, target: 10, done: false }
+        ];
+
+        const queList = [
+            "Tâm bình thế giới bình, tâm trí huệ chiếu soi muôn nơi.",
+            "Nói lời ôn hòa, gieo hạt giống từ bi vào lòng người.",
+            "Không làm các điều ác, nguyện làm các việc lành.",
+            "Nụ cười chánh niệm xua tan muôn vàn phiền não."
+        ];
+
+        const badges = [
+            { name: "Sơ Tâm Phụ Công", reqLevel: 1, icon: "🌸" },
+            { name: "Hoa Sen Vàng", reqLevel: 2, icon: "🪷" },
+            { name: "Tràng Hạt Bồ Đề", reqLevel: 3, icon: "📿" },
+            { name: "Đại Phước Điền", reqLevel: 4, icon: "👑" }
+        ];
+
+        function addMerit(amount, event) {
+            gameState.merit += amount;
+            gameState.exp += amount * 2;
+            checkLevelUp();
+            updateUI();
+            if (event) {
+                showFloatText(`+${amount} Công Đức`, event.clientX, event.clientY);
+            }
+        }
+
+        function tapMo(e) { playSound('mo'); addMerit(1, e); }
+        function tapChuong(e) { playSound('chuong'); addMerit(2, e); }
+
+        function showFloatText(text, x, y) {
+            const el = document.createElement('div');
+            el.className = 'float-text';
+            el.innerText = text;
+            el.style.left = `${x - 40}px`;
+            el.style.top = `${y - 20}px`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
+        function checkLevelUp() {
+            const maxExp = gameState.level * 100;
+            if (gameState.exp >= maxExp) {
+                gameState.level += 1;
+                gameState.exp -= maxExp;
+                alert(`Nam Mô A Di Đà Phật! Bạn đã thăng cấp lên Lv.${gameState.level}!`);
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('merit-points').innerText = gameState.merit;
+            document.getElementById('user-level-badge').innerText = `Lv.${gameState.level}`;
+            document.getElementById('user-name').innerText = gameState.name;
+            document.getElementById('user-avatar').innerText = gameState.name.charAt(0);
+
+            const rankIdx = Math.min(gameState.level - 1, ranks.length - 1);
+            document.getElementById('user-rank').innerText = `Danh hiệu: ${ranks[rankIdx]}`;
+
+            const maxExp = gameState.level * 100;
+            document.getElementById('exp-text').innerText = `${gameState.exp} / ${maxExp} EXP`;
+            document.getElementById('exp-bar').style.width = `${(gameState.exp / maxExp) * 100}%`;
+
+            renderQuests();
+            renderBadges();
+        }
+
+        function renderQuests() {
+            const container = document.getElementById('quest-list');
+            container.innerHTML = quests.map(q => `
+                <div class="bg-[#2A1D15] border border-[#4E3928] rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                        <h4 class="font-serif-custom text-sm font-bold text-[#F3E5AB]">${q.title}</h4>
+                        <span class="text-xs text-[#D4AF37]">+${q.rewardMerit} Công Đức | +${q.rewardExp} EXP</span>
+                    </div>
+                    <button onclick="startMinigame(${q.id})" class="px-4 py-2 bg-[#D4AF37] text-[#140E0A] font-bold text-xs rounded-lg hover:bg-[#FFE58F] transition ${q.done ? 'opacity-50 cursor-not-allowed' : ''}">
+                        ${q.done ? 'Đã hoàn thành' : 'Chơi & Làm'}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // --- HỆ THỐNG MINI-GAME TƯƠNG TÁC ---
+        let currentQuest = null;
+        let currentGameScore = 0;
+
+        function startMinigame(id) {
+            const q = quests.find(item => item.id === id);
+            if (q.done) return;
+            currentQuest = q;
+            currentGameScore = 0;
+
+            document.getElementById('minigame-modal').classList.remove('hidden');
+            document.getElementById('mg-title').innerText = q.title;
+            
+            setupGamePlayArea();
+        }
+
+        function setupGamePlayArea() {
+            const area = document.getElementById('mg-playarea');
+            area.innerHTML = '';
+
+            if (currentQuest.type === 'sweep') {
+                document.getElementById('mg-desc').innerText = `Hãy click vào các vết bụi bẩn xuất hiện để quét sạch chánh điện! (${currentGameScore}/${currentQuest.target})`;
+                document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
+                spawnDust();
+            } else if (currentQuest.type === 'catch') {
+                document.getElementById('mg-desc').innerText = `Click vào các rau củ quả chay rơi xuống để soạn mâm! (${currentGameScore}/${currentQuest.target})`;
+                document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
+                spawnVeggie();
+            } else if (currentQuest.type === 'tap') {
+                document.getElementById('mg-desc').innerText = `Gõ mõ liên tục theo nhịp để tụng kinh! (${currentGameScore}/${currentQuest.target})`;
+                document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
+                
+                const btn = document.createElement('button');
+                btn.className = 'w-20 h-20 rounded-full bg-[#D4AF37] text-[#140E0A] text-3xl shadow-lg active:scale-90 transition flex items-center justify-center';
+                btn.innerHTML = '🪵';
+                btn.onclick = (e) => {
+                    playSound('mo');
+                    currentGameScore++;
+                    document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
+                    if (currentGameScore >= currentQuest.target) {
+                        completeCurrentQuest();
+                    }
+                };
+                area.appendChild(btn);
+            }
+        }
+
+        // Mini-game 1: Quét bụi bẩn
+        function spawnDust() {
+            if (!currentQuest || currentQuest.done || document.getElementById('minigame-modal').classList.contains('hidden')) return;
+            const area = document.getElementById('mg-playarea');
+            area.innerHTML = '';
+
+            const dust = document.createElement('div');
+            dust.className = 'absolute text-2xl cursor-pointer animate-bounce';
+            dust.innerHTML = '🍂';
+            dust.style.left = `${Math.random() * 70 + 15}%`;
+            dust.style.top = `${Math.random() * 60 + 20}%`;
+
+            dust.onclick = (e) => {
+                playSound('mo');
+                currentGameScore++;
+                document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
+                if (currentGameScore >= currentQuest.target) {
+                    completeCurrentQuest();
+                } else {
+                    spawnDust();
+                }
+            };
+            area.appendChild(dust);
+        }
+
+        // Mini-game 2: Hứng rau củ
+        function spawnVeggie() {
+            if (!currentQuest || currentQuest.done || document.getElementById('minigame-modal').classList.contains('hidden')) return;
+            const area = document.getElementById('mg-playarea');
+            area.innerHTML = '';
+
+            const veggies = ['🥦', '🥕', '🍎', '🥬'];
+            const veg = document.createElement('div');
+            veg.className = 'absolute text-3xl cursor-pointer transition transform hover:scale-125';
+            veg.innerHTML = veggies[Math.floor(Math.random() * veggies.length)];
+            veg.style.left = `${Math.random() * 75 + 10}%`;
+            veg.style.top = `${Math.random() * 60 + 15}%`;
+
+            veg.onclick = (e) => {
+                playSound('success');
+                currentGameScore++;
+                document.getElementById('mg-progress').innerText = `Tiến độ: ${currentGameScore}/${currentQuest.target}`;
+                if (currentGameScore >= currentQuest.target) {
+                    completeCurrentQuest();
+                } else {
+                    spawnVeggie();
+                }
+            };
+            area.appendChild(veg);
+        }
+
+        function completeCurrentQuest() {
+            currentQuest.done = true;
+            playSound('success');
+            addMerit(currentQuest.rewardMerit, null);
+            alert(`Nam Mô A Di Đà Phật! Bạn đã hoàn thành xuất sắc nhiệm vụ: ${currentQuest.title} và nhận +${currentQuest.rewardMerit} Công Đức!`);
+            closeMinigame();
+            updateUI();
+        }
+
+        function closeMinigame() {
+            document.getElementById('minigame-modal').classList.add('hidden');
+            currentQuest = null;
+        }
+
+        function flipCard() {
+            if (gameState.isCardFlipped) return;
+            gameState.isCardFlipped = true;
+            document.getElementById('que-card').classList.add('card-flipped');
+
+            const randomText = queList[Math.floor(Math.random() * queList.length)];
+            document.getElementById('que-text').innerText = `"${randomText}"`;
+            playSound('chuong');
+            addMerit(50, null);
+        }
+
+        function renderBadges() {
+            const container = document.getElementById('badge-list');
+            container.innerHTML = badges.map(b => {
+                const unlocked = gameState.level >= b.reqLevel;
+                return `
+                    <div class="bg-[#2A1D15] border ${unlocked ? 'border-[#D4AF37]' : 'border-gray-800'} rounded-xl p-3 text-center ${unlocked ? '' : 'opacity-40'}">
+                        <div class="text-3xl mb-1">${b.icon}</div>
+                        <p class="text-xs font-bold text-[#F3E5AB]">${b.name}</p>
+                        <span class="text-[10px] text-gray-400">${unlocked ? 'Đã mở khóa' : `Yêu cầu Lv.${b.reqLevel}`}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function editName() {
+            const newName = prompt("Nhập Pháp danh / Tên của bạn:", gameState.name);
+            if (newName) {
+                gameState.name = newName;
+                updateUI();
+            }
+        }
+
+        function createPetals() {
+            const container = document.getElementById('petals-container');
+            for (let i = 0; i < 15; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = `${Math.random() * 100}vw`;
+                petal.style.width = `${Math.random() * 12 + 8}px`;
+                petal.style.height = `${Math.random() * 12 + 8}px`;
+                petal.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                petal.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(petal);
+            }
+        }
+
+        window.onload = () => {
+            createPetals();
+            renderQuests();
+            updateUI();
+        };
+    </script>
+</body>
+</html>
