@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phụng Sự & Công Quả — Mini-Game</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background: #1C120C; color: #EFE4CF; font-family: sans-serif; }
+  .panel { background: rgba(58,39,26,0.85); border: 1px solid rgba(212,175,55,0.3); }
+  .btn-gold { background: linear-gradient(180deg, #E8C960, #D4AF37); color: #24170D; font-weight: bold; cursor: pointer; }
+</style>
+</head>
+<body class="p-4 max-w-xl mx-auto space-y-6">
+
+  <header class="text-center pt-4">
+    <h1 class="text-3xl font-bold text-amber-300">Phụng Sự &amp; Công Quả</h1>
+    <p class="text-xs text-amber-100/70 mt-1">Hành trình tu tập &amp; tích phước</p>
+  </header>
+
+  <!-- Bảng Điểm -->
+  <div class="panel p-4 rounded-2xl flex justify-between items-center text-center">
+    <div>
+      <p class="text-xs text-amber-200">Cấp Bậc</p>
+      <span id="level" class="text-xl font-bold text-amber-400">1</span>
+    </div>
+    <div>
+      <p class="text-xs text-amber-200">Điểm Công Đức</p>
+      <span id="merit" class="text-2xl font-bold text-amber-300">0</span>
+    </div>
+  </div>
+
+  <!-- PHÁP KHÍ -->
+  <div class="panel p-5 rounded-2xl text-center space-y-3">
+    <h2 class="text-lg font-bold text-amber-200">Trì Tụng Pháp Khí</h2>
+    <div class="flex justify-center gap-4">
+      <button onclick="addPoint(1)" class="btn-gold px-5 py-3 rounded-xl text-sm">🪵 Gõ Mõ (+1 CĐ)</button>
+      <button onclick="addPoint(2)" class="btn-gold px-5 py-3 rounded-xl text-sm">🔔 Ngân Chuông (+2 CĐ)</button>
+    </div>
+  </div>
+
+  <!-- MINI-GAME NHIỆM VỤ -->
+  <div class="panel p-5 rounded-2xl space-y-4">
+    <h2 class="text-lg font-bold text-amber-200 text-center">🎮 Nhiệm Vụ Công Quả (Mini-Game)</h2>
+    <p class="text-xs text-center text-amber-100/60">Bấm nút "Chơi Ngay" để thực hiện nhiệm vụ tương tác trực tiếp!</p>
+
+    <div id="questContainer" class="space-y-3">
+      <!-- Quest 1 -->
+      <div class="bg-black/30 p-3 rounded-xl flex justify-between items-center">
+        <div>
+          <h4 class="font-bold text-sm text-amber-100">Quét dọn Chánh Điện</h4>
+          <p class="text-xs text-amber-200/60">+20 Công Đức</p>
+        </div>
+        <button onclick="openGame('Quét dọn Chánh Điện', '🍂', 5, 20)" class="btn-gold px-4 py-2 rounded-lg text-xs">🎮 Chơi Ngay</button>
+      </div>
+      <!-- Quest 2 -->
+      <div class="bg-black/30 p-3 rounded-xl flex justify-between items-center">
+        <div>
+          <h4 class="font-bold text-sm text-amber-100">Phụ bếp Trai đường</h4>
+          <p class="text-xs text-amber-200/60">+25 Công Đức</p>
+        </div>
+        <button onclick="openGame('Phụ bếp Trai đường', '🥦', 5, 25)" class="btn-gold px-4 py-2 rounded-lg text-xs">🎮 Chơi Ngay</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP MINI-GAME -->
+  <div id="modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+    <div class="panel p-6 rounded-2xl max-w-sm w-full text-center space-y-4 relative">
+      <h3 id="modalTitle" class="text-xl font-bold text-amber-300">Tên Game</h3>
+      <p class="text-xs text-amber-100/70">Nhấp vào vật phẩm xuất hiện liên tục để hoàn thành nhiệm vụ!</p>
+      
+      <!-- Vùng chơi tương tác -->
+      <div id="playArea" class="bg-black/50 h-40 rounded-xl relative overflow-hidden flex items-center justify-center border border-amber-500/30 select-none">
+        <button id="targetBtn" onclick="hitTarget()" class="absolute text-4xl p-2 cursor-pointer active:scale-90 transition transform">🍂</button>
+      </div>
+
+      <div class="flex justify-between items-center text-xs text-amber-300 font-semibold">
+        <span id="progress">Tiến độ: 0/5</span>
+        <button onclick="closeGame()" class="bg-red-900/60 text-red-200 px-3 py-1 rounded cursor-pointer">Thoát</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  let merit = 0;
+  let level = 1;
+  let currentTarget = 5;
+  let currentScore = 0;
+  let rewardVal = 20;
+
+  function addPoint(val) {
+    merit += val;
+    document.getElementById('merit').innerText = merit;
+    if(merit >= level * 100) {
+      level++;
+      document.getElementById('level').innerText = level;
+      alert("Nam Mô A Di Đà Phật! Đã thăng cấp vinh dự!");
+    }
+  }
+
+  function openGame(title, icon, target, reward) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('targetBtn').innerText = icon;
+    currentTarget = target;
+    currentScore = 0;
+    rewardVal = reward;
+    document.getElementById('progress').innerText = `Tiến độ: 0/${target}`;
+    document.getElementById('modal').classList.remove('hidden');
+    moveTarget();
+  }
+
+  function hitTarget() {
+    currentScore++;
+    document.getElementById('progress').innerText = `Tiến độ: ${currentScore}/${currentTarget}`;
+    if(currentScore >= currentTarget) {
+      alert(`🎉 Hoàn thành công quả! Nhận +${rewardVal} Điểm Công Đức!`);
+      addPoint(rewardVal);
+      closeGame();
+    } else {
+      moveTarget();
+    }
+  }
+
+  function moveTarget() {
+    const btn = document.getElementById('targetBtn');
+    const x = Math.floor(Math.random() * 220) + 20;
+    const y = Math.floor(Math.random() * 80) + 20;
+    btn.style.left = x + 'px';
+    btn.style.top = y + 'px';
+  }
+
+  function closeGame() {
+    document.getElementById('modal').classList.add('hidden');
+  }
+</script>
+</body>
+</html>
