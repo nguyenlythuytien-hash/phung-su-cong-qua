@@ -44,7 +44,7 @@
   }
   .font-serif { font-family: 'Playfair Display', Georgia, serif; }
 
-  /* Atmosphere GỐC CHUẨN */
+  /* ---------- Atmosphere ---------- */
   .bg-temple {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background:
@@ -62,10 +62,11 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* Falling lotus petals GỐC CHUẨN */
+  /* ---------- Falling lotus petals ---------- */
   #petals { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
   .petal { position: absolute; top: -8vh; will-change: transform; animation: petal-fall linear infinite; }
   .petal > i { display: block; will-change: transform; animation: petal-sway ease-in-out infinite alternate; }
+  .petal svg { display: block; }
   @keyframes petal-fall {
     0% { transform: translate3d(0, 0, 0); opacity: 0; }
     8% { opacity: var(--o, .8); }
@@ -77,13 +78,17 @@
     100% { transform: translateX(26px) rotate(55deg) rotateX(60deg); }
   }
 
-  /* Panels GỐC CHUẨN */
+  /* ---------- Panels ---------- */
   .panel {
     position: relative;
     background: linear-gradient(160deg, rgba(58,39,26,.72), rgba(28,18,12,.86));
     border: 1px solid rgba(212,175,55,.22);
     box-shadow: 0 1px 0 rgba(241,215,138,.08) inset, 0 24px 50px -24px rgba(0,0,0,.7);
     backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .panel::before {
+    content: ''; position: absolute; inset: 6px; border: 1px solid rgba(212,175,55,.08); border-radius: inherit; pointer-events: none;
   }
   .corner { position: absolute; width: 18px; height: 18px; border-color: rgba(212,175,55,.55); pointer-events: none; }
   .corner.tl { top: 10px; left: 10px; border-top: 1px solid; border-left: 1px solid; }
@@ -95,6 +100,8 @@
     background: linear-gradient(180deg, #F7EBC4 0%, #E6C665 45%, #B08A27 100%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(212,175,55,.5), transparent); }
+
   .btn-gold {
     background: linear-gradient(180deg, #E8C960 0%, #D4AF37 50%, #A9861F 100%);
     color: #24170D; font-weight: 600; cursor: pointer;
@@ -102,13 +109,38 @@
     transition: transform .15s ease, filter .2s ease;
   }
   .btn-gold:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-1px); }
-  .btn-ghost { border: 1px solid rgba(212,175,55,.4); color: var(--gold-light); cursor: pointer; transition: background .2s ease; }
+  .btn-ghost {
+    border: 1px solid rgba(212,175,55,.4); color: var(--gold-light); cursor: pointer;
+    transition: background .2s ease;
+  }
   .btn-ghost:hover { background: rgba(212,175,55,.1); }
 
+  /* EXP bar */
   .exp-track { background: rgba(0,0,0,.45); box-shadow: 0 1px 2px rgba(0,0,0,.6) inset; }
-  .exp-fill { background: linear-gradient(90deg, #9C7A1E, #D4AF37 60%, #F7EBC4); transition: width .7s ease; }
+  .exp-fill {
+    background: linear-gradient(90deg, #9C7A1E, #D4AF37 60%, #F7EBC4);
+    transition: width .7s cubic-bezier(.2,.8,.2,1);
+  }
+
+  /* ---------- Instruments ---------- */
   .instrument { cursor: pointer; user-select: none; position: relative; }
-  
+  .mo-hit { animation: mo-hit .22s ease-out; }
+  @keyframes mo-hit { 0% { transform: scale(1); } 35% { transform: scale(.92) rotate(-2deg); } 100% { transform: scale(1); } }
+  .mallet { transform-origin: 85% 15%; transition: transform .08s ease-out; }
+  .mallet.strike { transform: rotate(-24deg); }
+  .bell-swing { animation: bell-swing 1.6s cubic-bezier(.3,.6,.3,1); transform-origin: 50% 6%; }
+  @keyframes bell-swing { 0% { transform: rotate(0); } 15% { transform: rotate(5deg); } 35% { transform: rotate(-3.5deg); } 55% { transform: rotate(2deg); } 75% { transform: rotate(-1deg); } 100% { transform: rotate(0); } }
+  .striker { transition: transform .12s ease-out; }
+  .striker.strike { transform: translateX(16px); }
+  .ripple {
+    position: absolute; left: 50%; top: 50%; width: 60%; aspect-ratio: 1; border-radius: 50%;
+    border: 1.5px solid rgba(241,215,138,.65); pointer-events: none;
+    transform: translate(-50%, -50%) scale(.4); opacity: .9;
+    animation: ripple 1.2s ease-out forwards;
+  }
+  @keyframes ripple { to { transform: translate(-50%, -50%) scale(1.9); opacity: 0; } }
+  .halo { position: absolute; inset: 12% 8%; border-radius: 50%; background: radial-gradient(circle, rgba(212,175,55,.22), transparent 65%); pointer-events: none; }
+
   .float-merit {
     position: absolute; pointer-events: none; z-index: 30; white-space: nowrap;
     font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem;
@@ -120,6 +152,30 @@
     15% { transform: translate(-50%, -10px) scale(1.1); opacity: 1; }
     100% { transform: translate(-50%, -90px) scale(1); opacity: 0; }
   }
+
+  /* ---------- Fortune card ---------- */
+  .card-scene { perspective: 1400px; }
+  .card-inner { position: relative; transform-style: preserve-3d; transition: transform 1s cubic-bezier(.3,1.3,.4,1); }
+  .card-inner.flipped { transform: rotateY(180deg); }
+  .card-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 1.25rem; overflow: hidden; }
+  .card-front { transform: rotateY(180deg); }
+  .card-back-pattern {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(212,175,55,.25), transparent 55%),
+      repeating-conic-gradient(from 0deg at 50% 50%, rgba(212,175,55,.08) 0 10deg, transparent 10deg 20deg),
+      linear-gradient(160deg, #4E3524, #1C120C);
+  }
+  .card-paper {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.5), transparent 60%),
+      linear-gradient(170deg, #F7EBC4, #E9D49A 70%, #D9BE74);
+    color: #3A271A;
+  }
+  .card-shake { animation: card-shake .6s ease-in-out; }
+  @keyframes card-shake { 0%,100% { transform: rotate(0); } 20% { transform: rotate(-4deg) translateY(-4px); } 40% { transform: rotate(4deg); } 60% { transform: rotate(-3deg) translateY(-2px); } 80% { transform: rotate(2deg); } }
+
+  .toast { animation: toast-in .4s cubic-bezier(.2,.9,.3,1.2) forwards; }
+  @keyframes toast-in { from { transform: translateY(-16px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
 </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-gold selection:text-wood">
@@ -128,9 +184,12 @@
 <div class="grain"></div>
 <div id="petals" aria-hidden="true"></div>
 
+<!-- Toasts -->
+<div id="toasts" class="fixed top-3 left-1/2 -translate-x-1/2 z-[70] flex flex-col items-center gap-2 w-[min(92vw,380px)] pointer-events-none"></div>
+
 <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pb-16 pt-6 space-y-6">
 
-  <!-- Header Gốc -->
+  <!-- Header -->
   <header class="pb-2 flex items-center justify-between">
     <div class="flex items-center gap-3 sm:gap-4">
       <svg class="w-11 h-11 sm:w-14 sm:h-14 shrink-0" viewBox="0 0 64 64" aria-hidden="true">
@@ -151,7 +210,7 @@
     </button>
   </header>
 
-  <!-- Status bar Gốc -->
+  <!-- Status bar (Giống hệt ảnh 1) -->
   <section class="panel rounded-3xl p-5 sm:p-7">
     <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
     <div class="grid gap-5 md:grid-cols-[auto_1fr_auto] md:items-center">
@@ -181,9 +240,16 @@
         <span id="meritNum" class="font-serif text-3xl font-bold gold-text">0</span>
       </div>
     </div>
+    <div class="divider my-5"></div>
+    <dl class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+      <div><dt class="text-[11px] uppercase tracking-wider text-cream/50">Tiếng mõ</dt><dd id="statMo" class="font-serif text-xl text-gold-light">0</dd></div>
+      <div><dt class="text-[11px] uppercase tracking-wider text-cream/50">Hồi chuông</dt><dd id="statBell" class="font-serif text-xl text-gold-light">0</dd></div>
+      <div><dt class="text-[11px] uppercase tracking-wider text-cream/50">Việc công quả</dt><dd id="statQuest" class="font-serif text-xl text-gold-light">0</dd></div>
+      <div><dt class="text-[11px] uppercase tracking-wider text-cream/50">Tổng công đức</dt><dd id="statTotal" class="font-serif text-xl text-gold-light">0</dd></div>
+    </dl>
   </section>
 
-  <!-- Điểm Danh Hằng Ngày -->
+  <!-- ĐIỂM DANH TÍCH PHƯỚC -->
   <section class="panel rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
     <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
     <div class="flex items-center gap-4">
@@ -198,7 +264,7 @@
     </button>
   </section>
 
-  <!-- Bảng Vàng Xếp Hạng -->
+  <!-- BẢNG VÀNG XẾP HẠNG -->
   <section class="panel rounded-3xl p-5 sm:p-6">
     <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
     <div class="flex justify-between items-center mb-4">
@@ -208,69 +274,146 @@
     <div id="leaderboardList" class="space-y-2"></div>
   </section>
 
-  <!-- Không Gian Vãn Cảnh -->
-  <section class="panel rounded-3xl p-5 sm:p-6 text-center space-y-3">
-    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-    <div class="flex justify-between items-center">
-      <h2 class="font-serif text-xl text-gold-pale">⛩️ Không Gian Vãn Cảnh Tự Viện Trực Tuyến</h2>
-      <span class="text-xs text-gold animate-pulse">● Trực tuyến: 108 Phật tử</span>
-    </div>
-    <div class="bg-black/60 border border-gold/30 rounded-2xl h-56 relative overflow-hidden flex flex-col items-center justify-center p-4">
-      <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]"></div>
-      
-      <div id="templeScene" class="relative z-10 space-y-2">
-        <div class="text-5xl animate-bounce">🛕</div>
-        <p class="font-serif text-sm text-gold-light font-bold">Chánh Điện Trang Nghiêm</p>
-        <p class="text-xs text-cream/70 max-w-md">Bật nhạc tịnh tâm bên trên và chọn các hành hương bên dưới để tích lũy phước đức thời gian thực.</p>
+  <!-- Grid chính giống hệt Ảnh 1 (Pháp khí & Gieo quẻ) -->
+  <div class="grid gap-6 lg:grid-cols-12">
+
+    <!-- Gõ Mõ & Ngân Chuông -->
+    <section class="panel rounded-3xl p-5 sm:p-7 lg:col-span-7">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="flex items-end justify-between gap-3 mb-2">
+        <div>
+          <p class="text-xs tracking-[.3em] uppercase text-gold/60">Pháp khí</p>
+          <h2 class="font-serif text-2xl sm:text-3xl text-gold-pale">Gõ Mõ &amp; Ngân Chuông</h2>
+        </div>
+        <div class="text-right">
+          <p class="text-[11px] text-cream/50 uppercase tracking-wider">Chuỗi niệm</p>
+          <p class="font-serif text-xl text-gold-light"><span id="combo">0</span><span class="text-sm text-cream/50"> ×</span></p>
+        </div>
+      </div>
+      <p class="text-sm text-cream/60 mb-4">Mỗi tiếng mõ, mỗi hồi chuông là một niệm thiện lành. Gõ liên tục để nối dài chuỗi niệm.</p>
+
+      <div class="grid grid-cols-2 gap-3 sm:gap-6">
+        <!-- Mõ -->
+        <div>
+          <div id="moArea" class="instrument aspect-square rounded-2xl bg-black/20 border border-gold/10 grid place-items-center overflow-hidden">
+            <div class="halo"></div>
+            <svg id="moSvg" viewBox="0 0 220 220" class="w-[88%] h-[88%] relative">
+              <defs>
+                <radialGradient id="g-mo" cx="38%" cy="32%" r="75%">
+                  <stop offset="0" stop-color="#C06A3A"/><stop offset=".45" stop-color="#8A3E1E"/><stop offset="1" stop-color="#3E1A0C"/>
+                </radialGradient>
+                <linearGradient id="g-cush" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B8322A"/><stop offset="1" stop-color="#6E1813"/></linearGradient>
+                <linearGradient id="g-mallet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D9B57A"/><stop offset="1" stop-color="#7A5530"/></linearGradient>
+              </defs>
+              <ellipse cx="108" cy="182" rx="80" ry="16" fill="url(#g-cush)"/>
+              <path d="M30 180q78 18 156 0" stroke="#D4AF37" stroke-width="2" fill="none" opacity=".7"/>
+              <path d="M40 120c0-40 30-68 70-68s70 28 70 68c0 32-30 56-70 56S40 152 40 120z" fill="url(#g-mo)"/>
+              <path d="M58 128c14 8 32 12 52 12s38-4 52-12" fill="none" stroke="#1a0904" stroke-width="7" stroke-linecap="round"/>
+              <g fill="none" stroke="#D4AF37" stroke-width="1.6" opacity=".75">
+                <path d="M82 84q8-8 16 0M98 84q8-8 16 0M114 84q8-8 16 0"/>
+                <circle cx="70" cy="104" r="7"/><circle cx="70" cy="104" r="2.5" fill="#D4AF37"/>
+                <circle cx="150" cy="104" r="7"/><circle cx="150" cy="104" r="2.5" fill="#D4AF37"/>
+              </g>
+              <g id="mallet" class="mallet">
+                <path d="M200 30L140 82" stroke="url(#g-mallet)" stroke-width="7" stroke-linecap="round"/>
+                <ellipse cx="136" cy="86" rx="14" ry="11" fill="#8A3E1E" transform="rotate(-40 136 86)"/>
+              </g>
+            </svg>
+          </div>
+          <p class="text-center mt-3 font-serif text-lg text-gold-light">Mõ Gỗ</p>
+          <p class="text-center text-xs text-cream/50">+1 công đức · +1 EXP</p>
+        </div>
+
+        <!-- Chuông -->
+        <div>
+          <div id="bellArea" class="instrument aspect-square rounded-2xl bg-black/20 border border-gold/10 grid place-items-center overflow-hidden">
+            <div class="halo"></div>
+            <svg viewBox="0 0 220 220" class="w-[88%] h-[88%] relative">
+              <defs>
+                <linearGradient id="g-bell" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#6b4f12"/><stop offset=".3" stop-color="#E8C960"/><stop offset=".5" stop-color="#F7EBC4"/><stop offset=".7" stop-color="#D4AF37"/><stop offset="1" stop-color="#5a420c"/>
+                </linearGradient>
+                <linearGradient id="g-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E4A2E"/><stop offset="1" stop-color="#3A271A"/></linearGradient>
+              </defs>
+              <rect x="18" y="12" width="184" height="12" rx="4" fill="url(#g-beam)"/>
+              <g id="bellBody">
+                <path d="M96 38h28q4 0 4 4v4H92v-4q0-4 4-4z" fill="url(#g-bell)"/>
+                <path d="M70 60q0-14 40-14t40 14v96q0 8 10 14H60q10-6 10-14z" fill="url(#g-bell)"/>
+                <rect x="56" y="168" width="108" height="10" rx="3" fill="url(#g-bell)"/>
+              </g>
+              <g id="striker" class="striker">
+                <rect x="-6" y="140" width="56" height="18" rx="9" fill="#8B5E3C"/>
+                <circle cx="44" cy="149" r="6" fill="#6E4A2E" stroke="#3A271A"/>
+              </g>
+            </svg>
+          </div>
+          <p class="text-center mt-3 font-serif text-lg text-gold-light">Chuông Bát Nhã</p>
+          <p class="text-center text-xs text-cream/50">+1 công đức · +2 EXP</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gieo Quẻ Bồ Đề -->
+    <section class="panel rounded-3xl p-5 sm:p-7 lg:col-span-5 flex flex-col">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <p class="text-xs tracking-[.3em] uppercase text-gold/60">Mỗi ngày một lần</p>
+      <h2 class="font-serif text-2xl sm:text-3xl text-gold-pale">Gieo Quẻ Bồ Đề</h2>
+      <p class="text-sm text-cream/60 mt-1 mb-5">Tĩnh tâm, chắp tay, rồi rút một quẻ. Lời Phật dạy hôm nay sẽ đến với bạn.</p>
+
+      <div class="card-scene mx-auto w-full max-w-[300px] flex-1 min-h-[340px]">
+        <div id="card" class="card-inner w-full h-full min-h-[340px]">
+          <!-- back -->
+          <div class="card-face card-back-pattern border border-gold/40 grid place-items-center">
+            <div class="absolute inset-3 rounded-xl border border-gold/30"></div>
+            <div class="text-center relative">
+              <svg class="w-20 h-20 mx-auto" viewBox="0 0 64 64"><g fill="none" stroke="#D4AF37" stroke-width="1.4"><circle cx="32" cy="32" r="28" stroke-opacity=".4"/><path d="M32 14c5 6 6 13 0 21-6-8-5-15 0-21z" fill="rgba(212,175,55,.25)"/></g></svg>
+              <p class="font-serif text-2xl gold-text mt-3 font-bold">Quẻ Bồ Đề</p>
+            </div>
+          </div>
+          <!-- front -->
+          <div class="card-face card-front card-paper p-6 flex flex-col shadow-2xl">
+            <p id="fortuneNo" class="text-center text-[11px] tracking-[.3em] uppercase text-[#9C7A1E] font-semibold">Quẻ số 01</p>
+            <p id="fortuneType" class="text-center font-serif text-xl font-bold text-[#6b2b16] mt-1">Thượng Cát</p>
+            <blockquote id="fortuneQuote" class="font-serif italic text-[1rem] leading-relaxed text-center flex-1 grid place-items-center text-[#3A271A]">…</blockquote>
+            <p id="fortuneBonus" class="mt-2 rounded-lg bg-[#6b2b16] text-[#F7EBC4] text-center py-2 text-xs font-semibold">+20 công đức</p>
+          </div>
+        </div>
       </div>
 
-      <div class="absolute bottom-3 left-3 right-3 flex justify-center gap-2 flex-wrap z-20">
-        <button onclick="actionScene('thapHuong')" class="btn-ghost px-3 py-1.5 rounded-lg text-xs bg-black/40 cursor-pointer">🕯️ Thắp Nhang</button>
-        <button onclick="actionScene('thaHoa')" class="btn-ghost px-3 py-1.5 rounded-lg text-xs bg-black/40 cursor-pointer">🪷 Thả Hoa Đăng</button>
-        <button onclick="actionScene('phatPhap')" class="btn-ghost px-3 py-1.5 rounded-lg text-xs bg-black/40 cursor-pointer">📜 Nghe Pháp Âm</button>
+      <button id="drawBtn" class="btn-gold mt-5 w-full rounded-xl py-3 text-sm font-bold flex items-center justify-center gap-2">
+        <span id="drawLabel">Rút Quẻ</span>
+      </button>
+    </section>
+
+  </div>
+
+  <!-- NHIỆM VỤ CÔNG QUẢ (Tích hợp Mini-game tương tác) -->
+  <section class="panel rounded-3xl p-5 sm:p-7">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 class="font-serif text-2xl text-gold-pale">🎮 Nhiệm Vụ Công Quả (Mini-Game)</h2>
+        <p class="text-xs text-cream/60">Bấm nút "Chơi Ngay" để thực hiện nhiệm vụ tương tác trực tiếp!</p>
       </div>
     </div>
+    <div id="questList" class="space-y-3"></div>
   </section>
 
-  <!-- Grid chính: Pháp khí & Nhiệm vụ -->
-  <div class="grid gap-6 lg:grid-cols-12">
-    <section class="panel rounded-3xl p-6 lg:col-span-6 text-center">
-      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-      <h2 class="font-serif text-2xl text-gold-pale mb-2">Gõ Mõ &amp; Ngân Chuông</h2>
-      <p class="text-xs text-cream/60 mb-6">Nhấp vào pháp khí để tịnh tâm tích phước</p>
-      <div class="flex justify-center gap-6">
-        <button id="moArea" class="instrument p-6 rounded-2xl bg-black/30 border border-gold/20 hover:border-gold">
-          <div class="text-4xl mb-2">🪵</div>
-          <span class="text-xs font-bold text-gold-light">Gõ Mõ (+1 CĐ)</span>
-        </button>
-        <button id="bellArea" class="instrument p-6 rounded-2xl bg-black/30 border border-gold/20 hover:border-gold">
-          <div class="text-4xl mb-2">🔔</div>
-          <span class="text-xs font-bold text-gold-light">Ngân Chuông (+2 CĐ)</span>
-        </button>
-      </div>
-    </section>
-
-    <section class="panel rounded-3xl p-6 lg:col-span-6">
-      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-      <h2 class="font-serif text-2xl text-gold-pale mb-1">Nhiệm Vụ Công Quả</h2>
-      <p class="text-xs text-cream/60 mb-4">Bấm <strong class="text-gold">"🎮 Chơi Ngay"</strong> để thực hiện việc phước tương tác!</p>
-      <div id="questList" class="space-y-3"></div>
-    </section>
-  </div>
 </div>
 
-<!-- POPUP MINI-GAME -->
+<!-- MODAL MINI-GAME -->
 <div id="minigameModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
   <div class="panel rounded-2xl max-w-sm w-full p-6 text-center space-y-4 relative border border-gold/40">
-    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-    <h3 id="mgTitle" class="font-serif text-xl font-bold text-gold-pale">Tên Mini-Game</h3>
-    <p id="mgDesc" class="text-xs text-cream/70">Hướng dẫn...</p>
-
-    <div id="mgPlayArea" class="bg-black/60 border border-gold/30 rounded-xl h-44 flex items-center justify-center relative overflow-hidden select-none"></div>
+    <h3 id="mgTitle" class="font-serif text-xl font-bold text-gold-pale">Tên Game</h3>
+    <p id="mgDesc" class="text-xs text-cream/70">Nhấp vào vật phẩm liên tục để làm việc!</p>
+    
+    <div id="mgPlayArea" class="bg-black/60 border border-gold/30 rounded-xl h-44 flex items-center justify-center relative overflow-hidden select-none">
+      <button id="targetBtn" onclick="hitTarget()" class="absolute text-4xl p-2 cursor-pointer active:scale-90 transition transform">🍂</button>
+    </div>
 
     <div class="flex justify-between items-center text-xs text-gold">
       <span id="mgProgress" class="font-semibold">Tiến độ: 0/5</span>
-      <button onclick="closeMinigame()" class="btn-ghost px-3 py-1.5 rounded-lg cursor-pointer">Đóng</button>
+      <button onclick="closeMinigame()" class="btn-ghost px-3 py-1.5 rounded-lg">Đóng</button>
     </div>
   </div>
 </div>
@@ -286,8 +429,7 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      osc.connect(gain); gain.connect(audioCtx.destination);
       if (type === 'mo') {
         osc.frequency.setValueAtTime(220, audioCtx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.12);
@@ -305,21 +447,17 @@
     try {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
-
       isBgmPlaying = !isBgmPlaying;
       const icon = document.getElementById('bgmIcon');
       const text = document.getElementById('bgmText');
-
       if (isBgmPlaying) {
         icon.className = "fa-solid fa-volume-high text-gold animate-pulse";
         text.innerText = "Nhạc Tịnh Tâm: Bật";
-        
         bgmInterval = setInterval(() => {
           if (!isBgmPlaying) return;
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          osc.connect(gain); gain.connect(audioCtx.destination);
           osc.type = 'sine';
           osc.frequency.setValueAtTime(300, audioCtx.currentTime);
           osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 2.0);
@@ -335,18 +473,21 @@
     } catch(e) {}
   }
 
-  // State & LocalStorage
   let state = {
     name: 'Thiện Tâm',
     merit: 0,
     exp: 0,
     level: 1,
+    mo: 0,
+    bell: 0,
+    questsTotal: 0,
     lastCheckin: '',
+    draw: null,
     quests: [
-      { id: 1, title: "Quét dọn Chánh Điện", type: "sweep", merit: 20, exp: 40, target: 5, done: false },
-      { id: 2, title: "Phụ bếp Trai đường", type: "catch", merit: 25, exp: 50, target: 5, done: false },
-      { id: 3, title: "Hỗ trợ bãi xe", type: "parking", merit: 15, exp: 30, target: 5, done: false },
-      { id: 4, title: "Lạy Phật sám hối", type: "bow", merit: 30, exp: 60, target: 5, done: false }
+      { id: 1, title: "Quét dọn Chánh Điện", type: "sweep", icon: "🍂", merit: 20, exp: 40, target: 5, done: false },
+      { id: 2, title: "Phụ bếp Trai đường", type: "catch", icon: "🥦", merit: 25, exp: 50, target: 5, done: false },
+      { id: 3, title: "Hỗ trợ bãi xe", type: "parking", icon: "🚗", merit: 15, exp: 30, target: 5, done: false },
+      { id: 4, title: "Lạy Phật sám hối", type: "bow", icon: "🪷", merit: 30, exp: 60, target: 5, done: false }
     ]
   };
 
@@ -362,29 +503,13 @@
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        state.name = parsed.name || 'Thiện Tâm';
-        state.merit = parsed.merit || 0;
-        state.exp = parsed.exp || 0;
-        state.level = parsed.level || 1;
-        state.lastCheckin = parsed.lastCheckin || '';
-        if (parsed.quests) {
-          state.quests.forEach((q, idx) => {
-            if (parsed.quests[idx]) q.done = parsed.quests[idx].done;
-          });
-        }
+        Object.assign(state, parsed);
       } catch(e) {}
     }
   }
 
   function saveGame() {
-    localStorage.setItem('phungSuState', JSON.stringify({
-      name: state.name,
-      merit: state.merit,
-      exp: state.exp,
-      level: state.level,
-      lastCheckin: state.lastCheckin,
-      quests: state.quests.map(q => ({ id: q.id, done: q.done }))
-    }));
+    localStorage.setItem('phungSuState', JSON.stringify(state));
   }
 
   function getTodayString() {
@@ -394,9 +519,8 @@
 
   function checkDailyStatus() {
     const btn = document.getElementById('dailyBtn');
-    const today = getTodayString();
-    if (state.lastCheckin === today) {
-      btn.innerText = "✅ Đã Điểm Danh Hôm Nay";
+    if (state.lastCheckin === getTodayString()) {
+      btn.innerText = "✅ Đã Điểm Danh";
       btn.disabled = true;
       btn.className = "btn-ghost px-6 py-3 rounded-xl text-xs font-bold opacity-60 cursor-not-allowed";
     } else {
@@ -407,37 +531,27 @@
   }
 
   function claimDailyReward() {
-    const today = getTodayString();
-    if (state.lastCheckin === today) return;
-
-    state.lastCheckin = today;
+    if (state.lastCheckin === getTodayString()) return;
+    state.lastCheckin = getTodayString();
     playSound('chuong');
     addMerit(50, 50);
-    alert("🎉 Nam Mô A Di Đà Phật! Điểm danh thành công, chúc bạn một ngày an lạc (+50 Công Đức, +50 EXP)!");
-    checkDailyStatus();
+    alert("🎉 Điểm danh thành công! Nhận +50 Công Đức & +50 EXP.");
+    updateUI();
   }
 
   function renderLeaderboard() {
     const container = document.getElementById('leaderboardList');
     let list = [...virtualLeaderboard, { name: state.name + ' (Bạn)', merit: state.merit, isUser: true }];
     list.sort((a, b) => b.merit - a.merit);
-
-    container.innerHTML = list.map((item, idx) => {
-      let rankIcon = `#${idx + 1}`;
-      if (idx === 0) rankIcon = '🥇';
-      else if (idx === 1) rankIcon = '🥈';
-      else if (idx === 2) rankIcon = '🥉';
-
-      return `
-        <div class="bg-black/30 border ${item.isUser ? 'border-gold bg-gold/10' : 'border-gold/10'} rounded-xl p-3 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="w-8 text-center font-bold text-gold">${rankIcon}</span>
-            <span class="text-sm font-semibold text-cream ${item.isUser ? 'text-gold-light' : ''}">${item.name}</span>
-          </div>
-          <span class="text-xs font-bold text-gold-light tabular-nums">${item.merit} Công Đức</span>
+    container.innerHTML = list.map((item, idx) => `
+      <div class="bg-black/30 border ${item.isUser ? 'border-gold bg-gold/10' : 'border-gold/10'} rounded-xl p-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 text-center font-bold text-gold">#${idx+1}</span>
+          <span class="text-sm font-semibold text-cream ${item.isUser ? 'text-gold-light' : ''}">${item.name}</span>
         </div>
-      `;
-    }).join('');
+        <span class="text-xs font-bold text-gold-light">${item.merit} Công Đức</span>
+      </div>
+    `).join('');
   }
 
   function updateUI() {
@@ -445,8 +559,12 @@
     document.getElementById('levelNum').innerText = state.level;
     document.getElementById('levelBadge').innerText = state.level;
     document.getElementById('expNow').innerText = state.exp;
-    document.getElementById('nameBtn').innerText = state.name + ' ✏️';
+    document.getElementById('dharmaName').innerText = state.name;
     document.getElementById('expFill').style.width = Math.min(100, (state.exp / 120) * 100) + '%';
+    document.getElementById('statMo').innerText = state.mo;
+    document.getElementById('statBell').innerText = state.bell;
+    document.getElementById('statQuest').innerText = state.questsTotal;
+    document.getElementById('statTotal').innerText = state.merit;
     renderQuests();
     renderLeaderboard();
     checkDailyStatus();
@@ -456,33 +574,24 @@
   function addMerit(m, e, x, y) {
     state.merit += m;
     state.exp += e;
-    if (state.exp >= 120) { 
-      state.level++; 
-      state.exp = 0; 
-      alert("Nam Mô A Di Đà Phật! Đã thăng cấp vinh dự lên cấp " + state.level + "!"); 
-    }
+    if (state.exp >= 120) { state.level++; state.exp = 0; alert("Nam Mô A Di Đà Phật! Đã thăng cấp lên cấp " + state.level); }
     updateUI();
-    if (x && y) {
-      const el = document.createElement('div');
-      el.className = 'float-merit';
-      el.innerText = `+${m} CĐ`;
-      el.style.left = x + 'px';
-      el.style.top = y + 'px';
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 1150);
-    }
   }
 
   document.getElementById('moArea').addEventListener('click', (e) => {
     playSound('mo');
-    const r = e.currentTarget.getBoundingClientRect();
-    addMerit(1, 1, r.left + r.width/2, r.top);
+    document.getElementById('mallet').classList.add('strike');
+    setTimeout(() => document.getElementById('mallet').classList.remove('strike'), 90);
+    state.mo++;
+    addMerit(1, 1);
   });
 
   document.getElementById('bellArea').addEventListener('click', (e) => {
     playSound('chuong');
-    const r = e.currentTarget.getBoundingClientRect();
-    addMerit(2, 2, r.left + r.width/2, r.top);
+    document.getElementById('striker').classList.add('strike');
+    setTimeout(() => document.getElementById('striker').classList.remove('strike'), 140);
+    state.bell++;
+    addMerit(1, 2);
   });
 
   function renderQuests() {
@@ -509,37 +618,30 @@
     score = 0;
     document.getElementById('minigameModal').classList.remove('hidden');
     document.getElementById('mgTitle').innerText = currentQ.title;
-    nextStep();
+    document.getElementById('targetBtn').innerText = currentQ.icon;
+    moveTarget();
   }
 
-  function nextStep() {
-    const area = document.getElementById('mgPlayArea');
-    area.innerHTML = '';
+  function hitTarget() {
+    score++;
+    document.getElementById('mgProgress').innerText = `Tiến độ: ${score}/${currentQ.target}`;
+    playSound('mo');
     if (score >= currentQ.target) {
       currentQ.done = true;
+      state.questsTotal++;
       playSound('chuong');
       addMerit(currentQ.merit, currentQ.exp);
-      area.innerHTML = `<div class="text-gold font-serif text-lg">🎉 Nam Mô A Di Đà Phật! Hoàn thành!</div>`;
-      setTimeout(() => closeMinigame(), 1400);
-      return;
+      alert(`🎉 Hoàn thành công quả! Nhận +${currentQ.merit} Công Đức.`);
+      closeMinigame();
+    } else {
+      moveTarget();
     }
+  }
 
-    document.getElementById('mgDesc').innerText = `Nhấp vào vật phẩm để làm việc (${score}/${currentQ.target})`;
-    document.getElementById('mgProgress').innerText = `Tiến độ: ${score}/${currentQ.target}`;
-
-    const icons = { sweep: '🍂', catch: '🥦', parking: '🚗', bow: '🪷' };
-    const item = document.createElement('div');
-    item.className = 'absolute text-4xl cursor-pointer animate-bounce';
-    item.innerHTML = icons[currentQ.type] || '✨';
-    item.style.left = `${Math.random() * 65 + 15}%`;
-    item.style.top = `${Math.random() * 55 + 15}%`;
-    
-    item.onclick = () => {
-      playSound('mo');
-      score++;
-      nextStep();
-    };
-    area.appendChild(item);
+  function moveTarget() {
+    const btn = document.getElementById('targetBtn');
+    btn.style.left = `${Math.floor(Math.random() * 220) + 20}px`;
+    btn.style.top = `${Math.floor(Math.random() * 80) + 20}px`;
   }
 
   function closeMinigame() {
@@ -548,28 +650,21 @@
     updateUI();
   }
 
-  function actionScene(type) {
-    if(type === 'thapHuong') {
-      addMerit(15, 20);
-      alert("🙏 Nam Mô Phật! Bạn đã thành kính thắp hương cúng dường (+15 Công Đức).");
-    } else if(type === 'thaHoa') {
-      addMerit(10, 15);
-      alert("🪷 Hoa đăng nguyện cầu bình an đã được thả trôi trên dòng nước thanh tịnh (+10 Công Đức).");
-    } else {
-      addMerit(20, 30);
-      alert("📜 Lắng đọng tâm hồn nghe lời Phật dạy sâu sắc (+20 Công Đức).");
-    }
-  }
-
-  document.getElementById('nameBtn').addEventListener('click', () => {
-    const n = prompt("Nhập pháp danh mới:", state.name);
-    if (n && n.trim()) { 
-      state.name = n.trim(); 
-      updateUI(); 
-    }
+  document.getElementById('drawBtn').addEventListener('click', () => {
+    if (state.draw && state.draw.date === getTodayString()) return;
+    state.draw = { date: getTodayString(), type: "Thượng Cát", bonus: 20 };
+    document.getElementById('card').classList.add('flipped');
+    playSound('chuong');
+    addMerit(20, 20);
+    alert("🎋 Rút quẻ thành công! Nhận +20 Công Đức.");
+    updateUI();
   });
 
-  // Petals generator gốc chuẩn
+  document.getElementById('nameBtn').addEventListener('click', () => {
+    const n = prompt("Nhập pháp danh:", state.name);
+    if (n && n.trim()) { state.name = n.trim(); updateUI(); }
+  });
+
   function initPetals() {
     const container = document.getElementById('petals');
     if (!container) return;
@@ -581,11 +676,7 @@
       p.style.animationDelay = `${Math.random() * 8}s`;
       p.style.setProperty('--o', `${0.4 + Math.random() * 0.5}`);
       p.style.setProperty('--drift', `${(Math.random() - 0.5) * 80}px`);
-
-      const inner = document.createElement('i');
-      inner.style.animationDuration = `${3 + Math.random() * 3}s`;
-      inner.innerHTML = `<svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M7 0C7 5 2 8 0 11C3 15 9 15 14 11C12 8 7 5 7 0Z" fill="#E7A3A8" fill-opacity="0.65"/></svg>`;
-      p.appendChild(inner);
+      p.innerHTML = `<i><svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M7 0C7 5 2 8 0 11C3 15 9 15 14 11C12 8 7 5 7 0Z" fill="#E7A3A8" fill-opacity="0.65"/></svg></i>`;
       container.appendChild(p);
     }
   }
@@ -594,6 +685,11 @@
     initPetals();
     loadGame();
     updateUI();
+    if (state.draw && state.draw.date === getTodayString()) {
+      document.getElementById('card').classList.add('flipped');
+      document.getElementById('drawBtn').disabled = true;
+      document.getElementById('drawBtn').innerText = "Hôm nay đã gieo quẻ";
+    }
   };
 </script>
 </body>
