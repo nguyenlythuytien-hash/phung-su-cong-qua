@@ -44,26 +44,18 @@
   }
   .font-serif { font-family: 'Playfair Display', Georgia, serif; }
 
-  /* Atmosphere */
   .bg-temple {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background:
       radial-gradient(ellipse 70% 50% at 50% -10%, rgba(212,175,55,.22), transparent 70%),
       radial-gradient(ellipse 50% 40% at 100% 100%, rgba(156,122,30,.14), transparent 70%),
-      radial-gradient(ellipse 40% 35% at 0% 70%, rgba(231,163,168,.06), transparent 70%),
       linear-gradient(180deg, #22160F 0%, #1C120C 45%, #140D09 100%);
   }
-  .grain {
-    position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .07; mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  /* Panels */
   .panel {
     position: relative;
     background: linear-gradient(160deg, rgba(58,39,26,.72), rgba(28,18,12,.86));
     border: 1px solid rgba(212,175,55,.22);
-    box-shadow: 0 1px 0 rgba(241,215,138,.08) inset, 0 24px 50px -24px rgba(0,0,0,.7);
+    box-shadow: 0 24px 50px -24px rgba(0,0,0,.7);
     backdrop-filter: blur(6px);
   }
   .corner { position: absolute; width: 18px; height: 18px; border-color: rgba(212,175,55,.55); pointer-events: none; }
@@ -76,34 +68,20 @@
     background: linear-gradient(180deg, #F7EBC4 0%, #E6C665 45%, #B08A27 100%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(212,175,55,.5), transparent); }
-
   .btn-gold {
     background: linear-gradient(180deg, #E8C960 0%, #D4AF37 50%, #A9861F 100%);
     color: #24170D; font-weight: 600; cursor: pointer;
-    box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, 0 -2px 0 rgba(0,0,0,.18) inset, 0 8px 18px -8px rgba(212,175,55,.6);
-    transition: transform .15s ease, filter .2s ease;
+    box-shadow: 0 4px 12px rgba(212,175,55,.4);
+    transition: transform .15s ease;
   }
-  .btn-gold:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-1px); }
-  .btn-gold:active:not(:disabled) { transform: translateY(1px) scale(.98); }
-  .btn-gold:disabled { filter: grayscale(.7) brightness(.6); cursor: not-allowed; box-shadow: none; }
-
-  .btn-ghost {
-    border: 1px solid rgba(212,175,55,.4); color: var(--gold-light); cursor: pointer;
-    transition: background .2s ease;
-  }
+  .btn-gold:hover { transform: translateY(-1px); }
+  .btn-gold:active { transform: translateY(1px) scale(.98); }
+  .btn-ghost { border: 1px solid rgba(212,175,55,.4); color: var(--gold-light); cursor: pointer; }
   .btn-ghost:hover { background: rgba(212,175,55,.1); }
 
-  /* EXP bar */
-  .exp-track { background: rgba(0,0,0,.45); box-shadow: 0 1px 2px rgba(0,0,0,.6) inset; }
-  .exp-fill {
-    background: linear-gradient(90deg, #9C7A1E, #D4AF37 60%, #F7EBC4);
-    transition: width .7s cubic-bezier(.2,.8,.2,1);
-  }
-
-  .instrument { cursor: pointer; user-select: none; position: relative; }
-  .halo { position: absolute; inset: 12% 8%; border-radius: 50%; background: radial-gradient(circle, rgba(212,175,55,.22), transparent 65%); pointer-events: none; }
-
+  .exp-track { background: rgba(0,0,0,.45); }
+  .exp-fill { background: linear-gradient(90deg, #9C7A1E, #D4AF37 60%, #F7EBC4); transition: width .5s ease; }
+  .instrument { cursor: pointer; user-select: none; }
   .float-merit {
     position: absolute; pointer-events: none; z-index: 30; white-space: nowrap;
     font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem;
@@ -115,114 +93,95 @@
     15% { transform: translate(-50%, -10px) scale(1.1); opacity: 1; }
     100% { transform: translate(-50%, -90px) scale(1); opacity: 0; }
   }
-
-  /* Toast */
-  .toast { animation: toast-in .4s cubic-bezier(.2,.9,.3,1.2) forwards; }
-  @keyframes toast-in { from { transform: translateY(-16px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
 </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-gold selection:text-wood">
 
 <div class="bg-temple"></div>
-<div class="grain"></div>
 
-<div id="toasts" class="fixed top-3 left-1/2 -translate-x-1/2 z-[70] flex flex-col items-center gap-2 w-[min(92vw,380px)] pointer-events-none"></div>
-
-<div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pb-16 pt-6">
+<div class="relative z-10 max-w-4xl mx-auto px-4 py-8 space-y-6">
 
   <!-- Header -->
-  <header class="pb-6">
-    <div class="flex items-center gap-3 sm:gap-4">
-      <svg class="w-11 h-11 sm:w-14 sm:h-14 shrink-0" viewBox="0 0 64 64" aria-hidden="true">
-        <defs><linearGradient id="lg-logo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7EBC4"/><stop offset="1" stop-color="#B08A27"/></linearGradient></defs>
-        <g fill="none" stroke="url(#lg-logo)" stroke-width="2" stroke-linejoin="round">
-          <path d="M32 12c6 7 7 16 0 26-7-10-6-19 0-26z" fill="rgba(212,175,55,.18)"/>
-          <path d="M14 48h36" stroke-linecap="round"/>
-        </g>
-      </svg>
-      <div>
-        <p class="text-[10px] sm:text-xs tracking-[.35em] uppercase text-gold/70">Nam Mô Bổn Sư Thích Ca Mâu Ni Phật</p>
-        <h1 class="font-serif text-2xl sm:text-4xl leading-tight gold-text font-bold">Phụng Sự &amp; Công Quả</h1>
-      </div>
-    </div>
+  <header class="text-center">
+    <p class="text-xs tracking-[.35em] uppercase text-gold/70 mb-1">Nam Mô Bổn Sư Thích Ca Mâu Ni Phật</p>
+    <h1 class="font-serif text-3xl sm:text-4xl gold-text font-bold">Phụng Sự &amp; Công Quả</h1>
   </header>
 
   <!-- Status bar -->
-  <section class="panel rounded-3xl p-5 sm:p-7 mb-6">
+  <section class="panel rounded-3xl p-5 sm:p-6">
     <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-    <div class="grid gap-5 md:grid-cols-[auto_1fr_auto] md:items-center">
-      <div class="flex items-center gap-4">
-        <div class="relative w-16 h-16 rounded-full grid place-items-center bg-[#1C120C] border-2 border-gold">
-          <span id="levelBadge" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full btn-gold grid place-items-center text-xs font-bold">1</span>
-        </div>
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-14 h-14 rounded-full bg-[#1C120C] border-2 border-gold grid place-items-center font-serif text-gold text-xl font-bold" id="levelBadge">1</div>
         <div>
           <p class="text-xs text-gold/70 uppercase">Pháp danh</p>
-          <button id="nameBtn" class="font-serif text-xl font-semibold text-gold-pale cursor-pointer">Thiện Tâm ✏️</button>
-          <p id="rankTitle" class="text-sm text-lotus/90 italic">Sơ Phát Tâm</p>
+          <button id="nameBtn" class="font-serif text-lg font-semibold text-gold-pale cursor-pointer">Thiện Tâm ✏️</button>
+          <p id="rankTitle" class="text-xs text-lotus/90 italic">Sơ Phát Tâm</p>
         </div>
       </div>
-
-      <div class="md:px-6">
-        <div class="flex justify-between text-sm mb-2">
-          <span class="text-cream/80">Cấp <strong id="levelNum" class="text-gold-light">1</strong></span>
-          <span class="text-cream/60"><span id="expNow">0</span> / <span id="expNeed">120</span> EXP</span>
+      <div class="w-full sm:w-60">
+        <div class="flex justify-between text-xs mb-1">
+          <span class="text-cream/80">Kinh nghiệm EXP</span>
+          <span class="text-cream/60"><span id="expNow">0</span> / <span id="expNeed">120</span></span>
         </div>
-        <div class="exp-track h-3.5 rounded-full overflow-hidden">
+        <div class="exp-track h-3 rounded-full overflow-hidden">
           <div id="expFill" class="exp-fill h-full rounded-full" style="width:0%"></div>
         </div>
       </div>
-
-      <div class="flex md:flex-col items-center justify-between bg-black/20 md:bg-transparent px-4 py-3 rounded-2xl">
+      <div class="text-center sm:text-right">
         <p class="text-xs text-gold/70 uppercase">Điểm Công Đức</p>
         <span id="meritNum" class="font-serif text-3xl font-bold gold-text">0</span>
       </div>
     </div>
   </section>
 
-  <!-- Instruments & Quests Grid -->
-  <div class="grid gap-6 lg:grid-cols-12">
-    <!-- Mõ & Chuông -->
-    <section class="panel rounded-3xl p-5 sm:p-7 lg:col-span-6 text-center">
-      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-      <h2 class="font-serif text-2xl text-gold-pale mb-4">Gõ Mõ &amp; Ngân Chuông</h2>
-      <div class="flex justify-center gap-6">
-        <button id="moArea" class="instrument p-6 rounded-2xl bg-black/30 border border-gold/20 hover:border-gold">
-          <div class="text-4xl mb-2">🪵</div>
-          <span class="text-sm font-bold text-gold-light">Gõ Mõ (+1 CĐ)</span>
-        </button>
-        <button id="bellArea" class="instrument p-6 rounded-2xl bg-black/30 border border-gold/20 hover:border-gold">
-          <div class="text-4xl mb-2">🔔</div>
-          <span class="text-sm font-bold text-gold-light">Ngân Chuông (+2 CĐ)</span>
-        </button>
-      </div>
-    </section>
+  <!-- Pháp khí -->
+  <section class="panel rounded-3xl p-6 text-center">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <h2 class="font-serif text-2xl text-gold-pale mb-2">Tịnh Tâm &amp; Tích Phước</h2>
+    <p class="text-xs text-cream/60 mb-6">Nhấp vào pháp khí để gõ mõ và ngân chuông</p>
+    <div class="flex justify-center gap-8">
+      <button id="moArea" class="instrument p-5 rounded-2xl bg-black/30 border border-gold/20 hover:border-gold cursor-pointer transition">
+        <div class="text-4xl mb-2">🪵</div>
+        <span class="text-xs font-bold text-gold-light">Gõ Mõ (+1 CĐ)</span>
+      </button>
+      <button id="bellArea" class="instrument p-5 rounded-2xl bg-black/30 border border-gold/20 hover:border-gold cursor-pointer transition">
+        <div class="text-4xl mb-2">🔔</div>
+        <span class="text-xs font-bold text-gold-light">Ngân Chuông (+2 CĐ)</span>
+      </button>
+    </div>
+  </section>
 
-    <!-- Nhiệm vụ tích hợp MINI-GAME -->
-    <section class="panel rounded-3xl p-5 sm:p-7 lg:col-span-6">
-      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-      <h2 class="font-serif text-2xl text-gold-pale mb-2">Nhiệm Vụ &amp; Mini-Game</h2>
-      <p class="text-xs text-cream/60 mb-4">Bấm "Chơi Ngay" để làm nhiệm vụ tương tác trực tiếp!</p>
-      
-      <div id="questList" class="space-y-3">
-        <!-- Rendered by JS -->
+  <!-- KHU VỰC NHIỆM VỤ & MINI-GAME -->
+  <section class="panel rounded-3xl p-6">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 class="font-serif text-2xl text-gold-pale">Nhiệm Vụ Công Quả</h2>
+        <p class="text-xs text-cream/60">Bấm nút "🎮 Chơi Ngay" để vào mini-game tương tác làm việc phước!</p>
       </div>
-    </section>
-  </div>
+    </div>
+
+    <div id="questList" class="space-y-3">
+      <!-- Dynamic Quest List -->
+    </div>
+  </section>
+
 </div>
 
 <!-- POPUP MINI-GAME -->
 <div id="minigameModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-  <div class="panel rounded-2xl max-w-md w-full p-6 text-center space-y-4 relative border border-gold/40">
-    <h3 id="mgTitle" class="font-serif text-2xl font-bold text-gold-pale">Tên Mini-Game</h3>
-    <p id="mgDesc" class="text-xs text-cream/70">Hướng dẫn chơi...</p>
+  <div class="panel rounded-2xl max-w-sm w-full p-6 text-center space-y-4 relative border border-gold/40">
+    <h3 id="mgTitle" class="font-serif text-xl font-bold text-gold-pale">Tên Mini-Game</h3>
+    <p id="mgDesc" class="text-xs text-cream/70">Hướng dẫn...</p>
 
-    <div id="mgPlayArea" class="bg-black/50 border border-gold/30 rounded-xl h-48 flex items-center justify-center relative overflow-hidden select-none">
-      <!-- Vùng chơi game -->
+    <div id="mgPlayArea" class="bg-black/60 border border-gold/30 rounded-xl h-44 flex items-center justify-center relative overflow-hidden select-none">
+      <!-- Game target -->
     </div>
 
     <div class="flex justify-between items-center text-xs text-gold">
-      <span id="mgProgress" class="font-semibold text-sm">Tiến độ: 0/5</span>
-      <button onclick="closeMinigame()" class="btn-ghost px-4 py-2 rounded-lg">Đóng</button>
+      <span id="mgProgress" class="font-semibold">Tiến độ: 0/5</span>
+      <button onclick="closeMinigame()" class="btn-ghost px-3 py-1.5 rounded-lg">Đóng</button>
     </div>
   </div>
 </div>
@@ -242,11 +201,11 @@
         osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.12);
       } else {
         osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 1.5);
+        osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 1.2);
       }
       gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-      osc.start(); osc.stop(audioCtx.currentTime + 1.5);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+      osc.start(); osc.stop(audioCtx.currentTime + 1.2);
     } catch(e) {}
   }
 
@@ -258,19 +217,17 @@
     quests: [
       { id: 1, title: "Quét dọn Chánh Điện", type: "sweep", merit: 20, exp: 40, target: 5, done: false },
       { id: 2, title: "Phụ bếp Trai đường", type: "catch", merit: 25, exp: 50, target: 5, done: false },
-      { id: 3, title: "Hỗ trợ bãi xe", type: "parking", merit: 15, rank: 30, target: 5, done: false },
+      { id: 3, title: "Hỗ trợ bãi xe", type: "parking", merit: 15, exp: 30, target: 5, done: false },
       { id: 4, title: "Lạy Phật sám hối", type: "bow", merit: 30, exp: 60, target: 5, done: false }
     ]
   };
 
   function updateUI() {
-    document.getElementById('dharmaName') ? document.getElementById('dharmaName').innerText = state.name : null;
     document.getElementById('meritNum').innerText = state.merit;
-    document.getElementById('levelNum').innerText = state.level;
+    document.getElementById('levelNum') ? document.getElementById('levelNum').innerText = state.level : null;
     document.getElementById('levelBadge').innerText = state.level;
     document.getElementById('expNow').innerText = state.exp;
     document.getElementById('expFill').style.width = Math.min(100, (state.exp / 120) * 100) + '%';
-    
     renderQuests();
   }
 
@@ -305,13 +262,13 @@
   function renderQuests() {
     const list = document.getElementById('questList');
     list.innerHTML = state.quests.map(q => `
-      <div class="panel rounded-xl p-3 flex items-center justify-between gap-3 ${q.done ? 'opacity-50' : ''}">
+      <div class="bg-black/30 border border-gold/15 rounded-xl p-4 flex items-center justify-between gap-3 ${q.done ? 'opacity-50' : ''}">
         <div>
           <h4 class="font-serif text-sm font-bold text-gold-pale">${q.title}</h4>
-          <p class="text-xs text-cream/60">+${q.merit} Công Đức · +${q.exp || 30} EXP</p>
+          <p class="text-xs text-cream/60">+${q.merit} Công Đức · +${q.exp} EXP</p>
         </div>
-        <button onclick="startMinigame(${q.id})" class="btn-gold px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer" ${q.done ? 'disabled' : ''}>
-          ${q.done ? 'Đã xong' : '🎮 Chơi Ngay'}
+        <button onclick="startMinigame(${q.id})" class="btn-gold px-4 py-2 rounded-lg text-xs font-semibold ${q.done ? 'opacity-50 cursor-not-allowed' : ''}" ${q.done ? 'disabled' : ''}>
+          ${q.done ? 'Đã Xong' : '🎮 Chơi Ngay'}
         </button>
       </div>
     `).join('');
@@ -335,21 +292,21 @@
     if (score >= currentQ.target) {
       currentQ.done = true;
       playSound('chuong');
-      addMerit(currentQ.merit, currentQ.exp || 30);
-      area.innerHTML = `<div class="text-gold font-serif text-xl">🎉 Nam Mô A Di Đà Phật! Hoàn thành công quả!</div>`;
-      setTimeout(() => closeMinigame(), 1500);
+      addMerit(currentQ.merit, currentQ.exp);
+      area.innerHTML = `<div class="text-gold font-serif text-lg">🎉 Nam Mô A Di Đà Phật! Hoàn thành!</div>`;
+      setTimeout(() => closeMinigame(), 1400);
       return;
     }
 
-    document.getElementById('mgDesc').innerText = `Nhấp vào vật phẩm xuất hiện để tích điểm (${score}/${currentQ.target})`;
+    document.getElementById('mgDesc').innerText = `Nhấp vào vật phẩm để làm việc (${score}/${currentQ.target})`;
     document.getElementById('mgProgress').innerText = `Tiến độ: ${score}/${currentQ.target}`;
 
     const icons = { sweep: '🍂', catch: '🥦', parking: '🚗', bow: '🪷' };
     const item = document.createElement('div');
     item.className = 'absolute text-4xl cursor-pointer animate-bounce';
     item.innerHTML = icons[currentQ.type] || '✨';
-    item.style.left = `${Math.random() * 70 + 15}%`;
-    item.style.top = `${Math.random() * 60 + 15}%`;
+    item.style.left = `${Math.random() * 65 + 15}%`;
+    item.style.top = `${Math.random() * 55 + 15}%`;
     
     item.onclick = () => {
       playSound('mo');
@@ -366,8 +323,8 @@
   }
 
   document.getElementById('nameBtn').addEventListener('click', () => {
-    const n = prompt("Nhập pháp danh mới:", state.name);
-    if (n) { state.name = n; updateUI(); }
+    const n = prompt("Nhập pháp danh:", state.name);
+    if (n) { state.name = n; document.getElementById('nameBtn').innerText = n + ' ✏️'; }
   });
 
   window.onload = () => updateUI();
