@@ -2,137 +2,599 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phụng Sự & Công Quả — Mini-Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1C120C">
+<title>Phụng Sự & Công Quả — Hành Trình Tu Tập</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap&subset=vietnamese" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          gold: { DEFAULT: '#D4AF37', light: '#F1D78A', pale: '#F7EBC4', deep: '#9C7A1E' },
+          wood: { DEFAULT: '#1C120C', 900: '#130C08', 800: '#1C120C', 700: '#2A1C13', 600: '#3A271A', 500: '#4E3524' },
+          cream: '#EFE4CF',
+          lotus: '#E7A3A8'
+        },
+        fontFamily: {
+          sans: ['"Be Vietnam Pro"', 'system-ui', 'sans-serif'],
+          serif: ['"Playfair Display"', 'Georgia', 'serif']
+        }
+      }
+    }
+  };
+</script>
 <style>
-  body { background: #1C120C; color: #EFE4CF; font-family: sans-serif; }
-  .panel { background: rgba(58,39,26,0.85); border: 1px solid rgba(212,175,55,0.3); }
-  .btn-gold { background: linear-gradient(180deg, #E8C960, #D4AF37); color: #24170D; font-weight: bold; cursor: pointer; }
+  :root {
+    --gold: #D4AF37; --gold-light: #F1D78A; --wood: #1C120C; --wood-2: #2A1C13; --cream: #EFE4CF;
+  }
+  * { -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+    background: var(--wood);
+    color: var(--cream);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .font-serif { font-family: 'Playfair Display', Georgia, serif; }
+
+  /* Atmosphere GỐC CHUẨN */
+  .bg-temple {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% -10%, rgba(212,175,55,.22), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 100% 100%, rgba(156,122,30,.14), transparent 70%),
+      radial-gradient(ellipse 40% 35% at 0% 70%, rgba(231,163,168,.06), transparent 70%),
+      linear-gradient(180deg, #22160F 0%, #1C120C 45%, #140D09 100%);
+  }
+  .bg-temple::after {
+    content: ''; position: absolute; inset: 0; opacity: .5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23D4AF37' stroke-opacity='.05'%3E%3Ccircle cx='60' cy='60' r='28'/%3E%3Ccircle cx='60' cy='60' r='40'/%3E%3Cpath d='M60 20v80M20 60h80'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  .grain {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .07; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Falling lotus petals GỐC CHUẨN */
+  #petals { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+  .petal { position: absolute; top: -8vh; will-change: transform; animation: petal-fall linear infinite; }
+  .petal > i { display: block; will-change: transform; animation: petal-sway ease-in-out infinite alternate; }
+  @keyframes petal-fall {
+    0% { transform: translate3d(0, 0, 0); opacity: 0; }
+    8% { opacity: var(--o, .8); }
+    90% { opacity: var(--o, .8); }
+    100% { transform: translate3d(var(--drift, 40px), 118vh, 0); opacity: 0; }
+  }
+  @keyframes petal-sway {
+    0% { transform: translateX(-26px) rotate(-35deg) rotateX(10deg); }
+    100% { transform: translateX(26px) rotate(55deg) rotateX(60deg); }
+  }
+
+  /* Panels GỐC CHUẨN */
+  .panel {
+    position: relative;
+    background: linear-gradient(160deg, rgba(58,39,26,.72), rgba(28,18,12,.86));
+    border: 1px solid rgba(212,175,55,.22);
+    box-shadow: 0 1px 0 rgba(241,215,138,.08) inset, 0 24px 50px -24px rgba(0,0,0,.7);
+    backdrop-filter: blur(6px);
+  }
+  .corner { position: absolute; width: 18px; height: 18px; border-color: rgba(212,175,55,.55); pointer-events: none; }
+  .corner.tl { top: 10px; left: 10px; border-top: 1px solid; border-left: 1px solid; }
+  .corner.tr { top: 10px; right: 10px; border-top: 1px solid; border-right: 1px solid; }
+  .corner.bl { bottom: 10px; left: 10px; border-bottom: 1px solid; border-left: 1px solid; }
+  .corner.br { bottom: 10px; right: 10px; border-bottom: 1px solid; border-right: 1px solid; }
+
+  .gold-text {
+    background: linear-gradient(180deg, #F7EBC4 0%, #E6C665 45%, #B08A27 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .btn-gold {
+    background: linear-gradient(180deg, #E8C960 0%, #D4AF37 50%, #A9861F 100%);
+    color: #24170D; font-weight: 600; cursor: pointer;
+    box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, 0 -2px 0 rgba(0,0,0,.18) inset, 0 8px 18px -8px rgba(212,175,55,.6);
+    transition: transform .15s ease, filter .2s ease;
+  }
+  .btn-gold:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-1px); }
+  .btn-ghost { border: 1px solid rgba(212,175,55,.4); color: var(--gold-light); cursor: pointer; transition: background .2s ease; }
+  .btn-ghost:hover { background: rgba(212,175,55,.1); }
+
+  .exp-track { background: rgba(0,0,0,.45); box-shadow: 0 1px 2px rgba(0,0,0,.6) inset; }
+  .exp-fill { background: linear-gradient(90deg, #9C7A1E, #D4AF37 60%, #F7EBC4); transition: width .7s ease; }
+  .instrument { cursor: pointer; user-select: none; position: relative; }
+  
+  .float-merit {
+    position: absolute; pointer-events: none; z-index: 30; white-space: nowrap;
+    font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem;
+    color: #F7EBC4; text-shadow: 0 2px 10px rgba(212,175,55,.85);
+    animation: float-up 1.15s cubic-bezier(.2,.7,.3,1) forwards;
+  }
+  @keyframes float-up {
+    0% { transform: translate(-50%, 0) scale(.7); opacity: 0; }
+    15% { transform: translate(-50%, -10px) scale(1.1); opacity: 1; }
+    100% { transform: translate(-50%, -90px) scale(1); opacity: 0; }
+  }
 </style>
 </head>
-<body class="p-4 max-w-xl mx-auto space-y-6">
+<body class="min-h-screen antialiased selection:bg-gold selection:text-wood">
 
-  <header class="text-center">
-    <h1 class="text-3xl font-bold text-amber-300">Phụng Sự &amp; Công Quả</h1>
-    <p class="text-xs text-amber-100/70 mt-1">Hành trình tu tập &amp; tích phước</p>
+<div class="bg-temple"></div>
+<div class="grain"></div>
+<div id="petals" aria-hidden="true"></div>
+
+<div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pb-16 pt-6 space-y-6">
+
+  <!-- Header Gốc -->
+  <header class="pb-2 flex items-center justify-between">
+    <div class="flex items-center gap-3 sm:gap-4">
+      <svg class="w-11 h-11 sm:w-14 sm:h-14 shrink-0" viewBox="0 0 64 64" aria-hidden="true">
+        <defs><linearGradient id="lg-logo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7EBC4"/><stop offset="1" stop-color="#B08A27"/></linearGradient></defs>
+        <g fill="none" stroke="url(#lg-logo)" stroke-width="2" stroke-linejoin="round">
+          <path d="M32 12c6 7 7 16 0 26-7-10-6-19 0-26z" fill="rgba(212,175,55,.18)"/>
+          <path d="M14 48h36" stroke-linecap="round"/>
+        </g>
+      </svg>
+      <div>
+        <p class="text-[10px] sm:text-xs tracking-[.35em] uppercase text-gold/70">Nam Mô Bổn Sư Thích Ca Mâu Ni Phật</p>
+        <h1 class="font-serif text-2xl sm:text-4xl leading-tight gold-text font-bold">Phụng Sự &amp; Công Quả</h1>
+      </div>
+    </div>
+    <button id="bgmBtn" onclick="toggleBGM()" class="btn-ghost px-4 py-2 rounded-xl text-xs flex items-center gap-2">
+      <i id="bgmIcon" class="fa-solid fa-volume-xmark text-gold"></i>
+      <span id="bgmText">Nhạc Tịnh Tâm: Tắt</span>
+    </button>
   </header>
 
-  <!-- Bảng Điểm -->
-  <div class="panel p-4 rounded-2xl flex justify-between items-center text-center">
-    <div>
-      <p class="text-xs text-amber-200">Cấp Bậc</p>
-      <span id="level" class="text-xl font-bold text-amber-400">1</span>
-    </div>
-    <div>
-      <p class="text-xs text-amber-200">Điểm Công Đức</p>
-      <span id="merit" class="text-2xl font-bold text-amber-300">0</span>
-    </div>
-  </div>
-
-  <!-- PHÁP KHÍ -->
-  <div class="panel p-5 rounded-2xl text-center space-y-3">
-    <h2 class="text-lg font-bold text-amber-200">Trì Tụng Pháp Khí</h2>
-    <div class="flex justify-center gap-4">
-      <button onclick="addPoint(1)" class="btn-gold px-5 py-3 rounded-xl text-sm">🪵 Gõ Mõ (+1 CĐ)</button>
-      <button onclick="addPoint(2)" class="btn-gold px-5 py-3 rounded-xl text-sm">🔔 Ngân Chuông (+2 CĐ)</button>
-    </div>
-  </div>
-
-  <!-- MINI-GAME NHIỆM VỤ -->
-  <div class="panel p-5 rounded-2xl space-y-4">
-    <h2 class="text-lg font-bold text-amber-200 text-center">🎮 Nhiệm Vụ Công Quả (Mini-Game)</h2>
-    <p class="text-xs text-center text-amber-100/60">Bấm nút "Chơi Ngay" để thực hiện nhiệm vụ tương tác trực tiếp!</p>
-
-    <div id="questContainer" class="space-y-3">
-      <!-- Quest 1 -->
-      <div class="bg-black/30 p-3 rounded-xl flex justify-between items-center">
-        <div>
-          <h4 class="font-bold text-sm text-amber-100">Quét dọn Chánh Điện</h4>
-          <p class="text-xs text-amber-200/60">+20 Công Đức</p>
+  <!-- Status bar Gốc -->
+  <section class="panel rounded-3xl p-5 sm:p-7">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="grid gap-5 md:grid-cols-[auto_1fr_auto] md:items-center">
+      <div class="flex items-center gap-4">
+        <div class="relative w-16 h-16 rounded-full grid place-items-center bg-[#1C120C] border-2 border-gold">
+          <span id="levelBadge" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full btn-gold grid place-items-center text-xs font-bold">1</span>
         </div>
-        <button onclick="openGame('Quét dọn Chánh Điện', '🍂', 5, 20)" class="btn-gold px-4 py-2 rounded-lg text-xs">🎮 Chơi Ngay</button>
+        <div>
+          <p class="text-xs text-gold/70 uppercase">Pháp danh</p>
+          <button id="nameBtn" class="font-serif text-xl font-semibold text-gold-pale cursor-pointer">Thiện Tâm ✏️</button>
+          <p id="rankTitle" class="text-sm text-lotus/90 italic">Sơ Phát Tâm</p>
+        </div>
       </div>
-      <!-- Quest 2 -->
-      <div class="bg-black/30 p-3 rounded-xl flex justify-between items-center">
-        <div>
-          <h4 class="font-bold text-sm text-amber-100">Phụ bếp Trai đường</h4>
-          <p class="text-xs text-amber-200/60">+25 Công Đức</p>
+
+      <div class="md:px-6">
+        <div class="flex justify-between text-sm mb-2">
+          <span class="text-cream/80">Cấp <strong id="levelNum" class="text-gold-light">1</strong></span>
+          <span class="text-cream/60"><span id="expNow">0</span> / <span id="expNeed">120</span> EXP</span>
         </div>
-        <button onclick="openGame('Phụ bếp Trai đường', '🥦', 5, 25)" class="btn-gold px-4 py-2 rounded-lg text-xs">🎮 Chơi Ngay</button>
+        <div class="exp-track h-3.5 rounded-full overflow-hidden">
+          <div id="expFill" class="exp-fill h-full rounded-full" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="flex md:flex-col items-center justify-between bg-black/20 md:bg-transparent px-4 py-3 rounded-2xl">
+        <p class="text-xs text-gold/70 uppercase">Điểm Công Đức</p>
+        <span id="meritNum" class="font-serif text-3xl font-bold gold-text">0</span>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- POPUP MINI-GAME -->
-  <div id="modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
-    <div class="panel p-6 rounded-2xl max-w-sm w-full text-center space-y-4 relative">
-      <h3 id="modalTitle" class="text-xl font-bold text-amber-300">Tên Game</h3>
-      <p class="text-xs text-amber-100/70">Nhấp vào vật phẩm xuất hiện liên tục để hoàn thành nhiệm vụ!</p>
+  <!-- Điểm Danh Hằng Ngày -->
+  <section class="panel rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="flex items-center gap-4">
+      <div class="text-4xl">🧧</div>
+      <div>
+        <h3 class="font-serif text-lg font-bold text-gold-pale">Điểm Danh Tích Phước Hằng Ngày</h3>
+        <p class="text-xs text-cream/70">Mỗi ngày tinh tấn điểm danh nhận +50 Công Đức &amp; +50 EXP</p>
+      </div>
+    </div>
+    <button id="dailyBtn" onclick="claimDailyReward()" class="btn-gold px-6 py-3 rounded-xl text-xs font-bold whitespace-nowrap">
+      🙏 Điểm Danh Nhận Quà
+    </button>
+  </section>
+
+  <!-- Bảng Vàng Xếp Hạng -->
+  <section class="panel rounded-3xl p-5 sm:p-6">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="font-serif text-xl text-gold-pale">🏆 Bảng Vàng Công Đức (Xếp Hạng Đạo Tràng)</h2>
+      <span class="text-xs text-gold/80 italic">Cập nhật liên tục</span>
+    </div>
+    <div id="leaderboardList" class="space-y-2"></div>
+  </section>
+
+  <!-- Không Gian Vãn Cảnh -->
+  <section class="panel rounded-3xl p-5 sm:p-6 text-center space-y-3">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="flex justify-between items-center">
+      <h2 class="font-serif text-xl text-gold-pale">⛩️ Không Gian Vãn Cảnh Tự Viện Trực Tuyến</h2>
+      <span class="text-xs text-gold animate-pulse">● Trực tuyến: 108 Phật tử</span>
+    </div>
+    <div class="bg-black/60 border border-gold/30 rounded-2xl h-56 relative overflow-hidden flex flex-col items-center justify-center p-4">
+      <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]"></div>
       
-      <!-- Vùng chơi tương tác -->
-      <div id="playArea" class="bg-black/50 h-40 rounded-xl relative overflow-hidden flex items-center justify-center border border-amber-500/30 select-none">
-        <button id="targetBtn" onclick="hitTarget()" class="absolute text-4xl p-2 cursor-pointer active:scale-90 transition transform">🍂</button>
+      <div id="templeScene" class="relative z-10 space-y-2">
+        <div class="text-5xl animate-bounce">🛕</div>
+        <p class="font-serif text-sm text-gold-light font-bold">Chánh Điện Trang Nghiêm</p>
+        <p class="text-xs text-cream/70 max-w-md">Bật nhạc tịnh tâm bên trên và chọn các hành hương bên dưới để tích lũy phước đức thời gian thực.</p>
       </div>
 
-      <div class="flex justify-between items-center text-xs text-amber-300 font-semibold">
-        <span id="progress">Tiến độ: 0/5</span>
-        <button onclick="closeGame()" class="bg-red-900/60 text-red-200 px-3 py-1 rounded">Thoát</button>
+      <div class="absolute bottom-3 left-3 right-3 flex justify-center gap-2 flex-wrap z-20">
+        <button onclick="actionScene('thapHuong')" class="btn-ghost px-3 py-1.5 rounded-lg text-xs bg-black/40 cursor-pointer">🕯️ Thắp Nhang</button>
+        <button onclick="actionScene('thaHoa')" class="btn-ghost px-3 py-1.5 rounded-lg text-xs bg-black/40 cursor-pointer">🪷 Thả Hoa Đăng</button>
+        <button onclick="actionScene('phatPhap')" class="btn-ghost px-3 py-1.5 rounded-lg text-xs bg-black/40 cursor-pointer">📜 Nghe Pháp Âm</button>
       </div>
     </div>
+  </section>
+
+  <!-- Grid chính: Pháp khí & Nhiệm vụ -->
+  <div class="grid gap-6 lg:grid-cols-12">
+    <section class="panel rounded-3xl p-6 lg:col-span-6 text-center">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <h2 class="font-serif text-2xl text-gold-pale mb-2">Gõ Mõ &amp; Ngân Chuông</h2>
+      <p class="text-xs text-cream/60 mb-6">Nhấp vào pháp khí để tịnh tâm tích phước</p>
+      <div class="flex justify-center gap-6">
+        <button id="moArea" class="instrument p-6 rounded-2xl bg-black/30 border border-gold/20 hover:border-gold">
+          <div class="text-4xl mb-2">🪵</div>
+          <span class="text-xs font-bold text-gold-light">Gõ Mõ (+1 CĐ)</span>
+        </button>
+        <button id="bellArea" class="instrument p-6 rounded-2xl bg-black/30 border border-gold/20 hover:border-gold">
+          <div class="text-4xl mb-2">🔔</div>
+          <span class="text-xs font-bold text-gold-light">Ngân Chuông (+2 CĐ)</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="panel rounded-3xl p-6 lg:col-span-6">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <h2 class="font-serif text-2xl text-gold-pale mb-1">Nhiệm Vụ Công Quả</h2>
+      <p class="text-xs text-cream/60 mb-4">Bấm <strong class="text-gold">"🎮 Chơi Ngay"</strong> để thực hiện việc phước tương tác!</p>
+      <div id="questList" class="space-y-3"></div>
+    </section>
   </div>
+</div>
+
+<!-- POPUP MINI-GAME -->
+<div id="minigameModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="panel rounded-2xl max-w-sm w-full p-6 text-center space-y-4 relative border border-gold/40">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <h3 id="mgTitle" class="font-serif text-xl font-bold text-gold-pale">Tên Mini-Game</h3>
+    <p id="mgDesc" class="text-xs text-cream/70">Hướng dẫn...</p>
+
+    <div id="mgPlayArea" class="bg-black/60 border border-gold/30 rounded-xl h-44 flex items-center justify-center relative overflow-hidden select-none"></div>
+
+    <div class="flex justify-between items-center text-xs text-gold">
+      <span id="mgProgress" class="font-semibold">Tiến độ: 0/5</span>
+      <button onclick="closeMinigame()" class="btn-ghost px-3 py-1.5 rounded-lg cursor-pointer">Đóng</button>
+    </div>
+  </div>
+</div>
 
 <script>
-  let merit = 0;
-  let level = 1;
-  let currentTarget = 5;
-  let currentScore = 0;
-  let rewardVal = 20;
+  let audioCtx = null;
+  let bgmInterval = null;
+  let isBgmPlaying = false;
 
-  function addPoint(val) {
-    merit += val;
-    document.getElementById('merit').innerText = merit;
-    if(merit >= level * 100) {
-      level++;
-      document.getElementById('level').innerText = level;
-      alert("Nam Mô A Di Đà Phật! Đã thăng cấp vinh dự!");
+  function playSound(type) {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      if (type === 'mo') {
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.12);
+      } else {
+        osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 1.2);
+      }
+      gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+      osc.start(); osc.stop(audioCtx.currentTime + 1.2);
+    } catch(e) {}
+  }
+
+  function toggleBGM() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      isBgmPlaying = !isBgmPlaying;
+      const icon = document.getElementById('bgmIcon');
+      const text = document.getElementById('bgmText');
+
+      if (isBgmPlaying) {
+        icon.className = "fa-solid fa-volume-high text-gold animate-pulse";
+        text.innerText = "Nhạc Tịnh Tâm: Bật";
+        
+        bgmInterval = setInterval(() => {
+          if (!isBgmPlaying) return;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 2.0);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.2);
+          osc.start(); osc.stop(audioCtx.currentTime + 2.2);
+        }, 3500);
+      } else {
+        icon.className = "fa-solid fa-volume-xmark text-gold";
+        text.innerText = "Nhạc Tịnh Tâm: Tắt";
+        if (bgmInterval) clearInterval(bgmInterval);
+      }
+    } catch(e) {}
+  }
+
+  // State & LocalStorage
+  let state = {
+    name: 'Thiện Tâm',
+    merit: 0,
+    exp: 0,
+    level: 1,
+    lastCheckin: '',
+    quests: [
+      { id: 1, title: "Quét dọn Chánh Điện", type: "sweep", merit: 20, exp: 40, target: 5, done: false },
+      { id: 2, title: "Phụ bếp Trai đường", type: "catch", merit: 25, exp: 50, target: 5, done: false },
+      { id: 3, title: "Hỗ trợ bãi xe", type: "parking", merit: 15, exp: 30, target: 5, done: false },
+      { id: 4, title: "Lạy Phật sám hối", type: "bow", merit: 30, exp: 60, target: 5, done: false }
+    ]
+  };
+
+  let virtualLeaderboard = [
+    { name: "Phật tử Diệu Hạnh", merit: 1280 },
+    { name: "Phật tử Minh Tâm", merit: 950 },
+    { name: "Phật tử Quảng Đức", merit: 720 },
+    { name: "Phật tử Liên Hoa", merit: 540 }
+  ];
+
+  function loadGame() {
+    const saved = localStorage.getItem('phungSuState');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        state.name = parsed.name || 'Thiện Tâm';
+        state.merit = parsed.merit || 0;
+        state.exp = parsed.exp || 0;
+        state.level = parsed.level || 1;
+        state.lastCheckin = parsed.lastCheckin || '';
+        if (parsed.quests) {
+          state.quests.forEach((q, idx) => {
+            if (parsed.quests[idx]) q.done = parsed.quests[idx].done;
+          });
+        }
+      } catch(e) {}
     }
   }
 
-  function openGame(title, icon, target, reward) {
-    document.getElementById('modalTitle').innerText = title;
-    document.getElementById('targetBtn').innerText = icon;
-    currentTarget = target;
-    currentScore = 0;
-    rewardVal = reward;
-    document.getElementById('progress').innerText = `Tiến độ: 0/${target}`;
-    document.getElementById('modal').classList.remove('hidden');
-    moveTarget();
+  function saveGame() {
+    localStorage.setItem('phungSuState', JSON.stringify({
+      name: state.name,
+      merit: state.merit,
+      exp: state.exp,
+      level: state.level,
+      lastCheckin: state.lastCheckin,
+      quests: state.quests.map(q => ({ id: q.id, done: q.done }))
+    }));
   }
 
-  function hitTarget() {
-    currentScore++;
-    document.getElementById('progress').innerText = `Tiến độ: ${currentScore}/${currentTarget}`;
-    if(currentScore >= currentTarget) {
-      alert(`🎉 Hoàn thành công quả! Nhận +${rewardVal} Điểm Công Đức!`);
-      addPoint(rewardVal);
-      closeGame();
+  function getTodayString() {
+    const d = new Date();
+    return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  }
+
+  function checkDailyStatus() {
+    const btn = document.getElementById('dailyBtn');
+    const today = getTodayString();
+    if (state.lastCheckin === today) {
+      btn.innerText = "✅ Đã Điểm Danh Hôm Nay";
+      btn.disabled = true;
+      btn.className = "btn-ghost px-6 py-3 rounded-xl text-xs font-bold opacity-60 cursor-not-allowed";
     } else {
-      moveTarget();
+      btn.innerText = "🙏 Điểm Danh Nhận Quà";
+      btn.disabled = false;
+      btn.className = "btn-gold px-6 py-3 rounded-xl text-xs font-bold cursor-pointer";
     }
   }
 
-  function moveTarget() {
-    const btn = document.getElementById('targetBtn');
-    const x = Math.floor(Math.random() * 220) + 20;
-    const y = Math.floor(Math.random() * 80) + 20;
-    btn.style.left = x + 'px';
-    btn.style.top = y + 'px';
+  function claimDailyReward() {
+    const today = getTodayString();
+    if (state.lastCheckin === today) return;
+
+    state.lastCheckin = today;
+    playSound('chuong');
+    addMerit(50, 50);
+    alert("🎉 Nam Mô A Di Đà Phật! Điểm danh thành công, chúc bạn một ngày an lạc (+50 Công Đức, +50 EXP)!");
+    checkDailyStatus();
   }
 
-  function closeGame() {
-    document.getElementById('modal').classList.add('hidden');
+  function renderLeaderboard() {
+    const container = document.getElementById('leaderboardList');
+    let list = [...virtualLeaderboard, { name: state.name + ' (Bạn)', merit: state.merit, isUser: true }];
+    list.sort((a, b) => b.merit - a.merit);
+
+    container.innerHTML = list.map((item, idx) => {
+      let rankIcon = `#${idx + 1}`;
+      if (idx === 0) rankIcon = '🥇';
+      else if (idx === 1) rankIcon = '🥈';
+      else if (idx === 2) rankIcon = '🥉';
+
+      return `
+        <div class="bg-black/30 border ${item.isUser ? 'border-gold bg-gold/10' : 'border-gold/10'} rounded-xl p-3 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="w-8 text-center font-bold text-gold">${rankIcon}</span>
+            <span class="text-sm font-semibold text-cream ${item.isUser ? 'text-gold-light' : ''}">${item.name}</span>
+          </div>
+          <span class="text-xs font-bold text-gold-light tabular-nums">${item.merit} Công Đức</span>
+        </div>
+      `;
+    }).join('');
   }
+
+  function updateUI() {
+    document.getElementById('meritNum').innerText = state.merit;
+    document.getElementById('levelNum').innerText = state.level;
+    document.getElementById('levelBadge').innerText = state.level;
+    document.getElementById('expNow').innerText = state.exp;
+    document.getElementById('nameBtn').innerText = state.name + ' ✏️';
+    document.getElementById('expFill').style.width = Math.min(100, (state.exp / 120) * 100) + '%';
+    renderQuests();
+    renderLeaderboard();
+    checkDailyStatus();
+    saveGame();
+  }
+
+  function addMerit(m, e, x, y) {
+    state.merit += m;
+    state.exp += e;
+    if (state.exp >= 120) { 
+      state.level++; 
+      state.exp = 0; 
+      alert("Nam Mô A Di Đà Phật! Đã thăng cấp vinh dự lên cấp " + state.level + "!"); 
+    }
+    updateUI();
+    if (x && y) {
+      const el = document.createElement('div');
+      el.className = 'float-merit';
+      el.innerText = `+${m} CĐ`;
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1150);
+    }
+  }
+
+  document.getElementById('moArea').addEventListener('click', (e) => {
+    playSound('mo');
+    const r = e.currentTarget.getBoundingClientRect();
+    addMerit(1, 1, r.left + r.width/2, r.top);
+  });
+
+  document.getElementById('bellArea').addEventListener('click', (e) => {
+    playSound('chuong');
+    const r = e.currentTarget.getBoundingClientRect();
+    addMerit(2, 2, r.left + r.width/2, r.top);
+  });
+
+  function renderQuests() {
+    const list = document.getElementById('questList');
+    list.innerHTML = state.quests.map(q => `
+      <div class="bg-black/30 border border-gold/15 rounded-xl p-4 flex items-center justify-between gap-3 ${q.done ? 'opacity-50' : ''}">
+        <div>
+          <h4 class="font-serif text-sm font-bold text-gold-pale">${q.title}</h4>
+          <p class="text-xs text-cream/60">+${q.merit} Công Đức · +${q.exp} EXP</p>
+        </div>
+        <button onclick="startMinigame(${q.id})" class="btn-gold px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer ${q.done ? 'opacity-50 cursor-not-allowed' : ''}" ${q.done ? 'disabled' : ''}>
+          ${q.done ? 'Đã Xong' : '🎮 Chơi Ngay'}
+        </button>
+      </div>
+    `).join('');
+  }
+
+  let currentQ = null;
+  let score = 0;
+
+  function startMinigame(id) {
+    currentQ = state.quests.find(q => q.id === id);
+    if (!currentQ || currentQ.done) return;
+    score = 0;
+    document.getElementById('minigameModal').classList.remove('hidden');
+    document.getElementById('mgTitle').innerText = currentQ.title;
+    nextStep();
+  }
+
+  function nextStep() {
+    const area = document.getElementById('mgPlayArea');
+    area.innerHTML = '';
+    if (score >= currentQ.target) {
+      currentQ.done = true;
+      playSound('chuong');
+      addMerit(currentQ.merit, currentQ.exp);
+      area.innerHTML = `<div class="text-gold font-serif text-lg">🎉 Nam Mô A Di Đà Phật! Hoàn thành!</div>`;
+      setTimeout(() => closeMinigame(), 1400);
+      return;
+    }
+
+    document.getElementById('mgDesc').innerText = `Nhấp vào vật phẩm để làm việc (${score}/${currentQ.target})`;
+    document.getElementById('mgProgress').innerText = `Tiến độ: ${score}/${currentQ.target}`;
+
+    const icons = { sweep: '🍂', catch: '🥦', parking: '🚗', bow: '🪷' };
+    const item = document.createElement('div');
+    item.className = 'absolute text-4xl cursor-pointer animate-bounce';
+    item.innerHTML = icons[currentQ.type] || '✨';
+    item.style.left = `${Math.random() * 65 + 15}%`;
+    item.style.top = `${Math.random() * 55 + 15}%`;
+    
+    item.onclick = () => {
+      playSound('mo');
+      score++;
+      nextStep();
+    };
+    area.appendChild(item);
+  }
+
+  function closeMinigame() {
+    document.getElementById('minigameModal').classList.add('hidden');
+    currentQ = null;
+    updateUI();
+  }
+
+  function actionScene(type) {
+    if(type === 'thapHuong') {
+      addMerit(15, 20);
+      alert("🙏 Nam Mô Phật! Bạn đã thành kính thắp hương cúng dường (+15 Công Đức).");
+    } else if(type === 'thaHoa') {
+      addMerit(10, 15);
+      alert("🪷 Hoa đăng nguyện cầu bình an đã được thả trôi trên dòng nước thanh tịnh (+10 Công Đức).");
+    } else {
+      addMerit(20, 30);
+      alert("📜 Lắng đọng tâm hồn nghe lời Phật dạy sâu sắc (+20 Công Đức).");
+    }
+  }
+
+  document.getElementById('nameBtn').addEventListener('click', () => {
+    const n = prompt("Nhập pháp danh mới:", state.name);
+    if (n && n.trim()) { 
+      state.name = n.trim(); 
+      updateUI(); 
+    }
+  });
+
+  // Petals generator gốc chuẩn
+  function initPetals() {
+    const container = document.getElementById('petals');
+    if (!container) return;
+    for (let i = 0; i < 16; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.style.left = `${Math.random() * 100}vw`;
+      p.style.animationDuration = `${8 + Math.random() * 7}s`;
+      p.style.animationDelay = `${Math.random() * 8}s`;
+      p.style.setProperty('--o', `${0.4 + Math.random() * 0.5}`);
+      p.style.setProperty('--drift', `${(Math.random() - 0.5) * 80}px`);
+
+      const inner = document.createElement('i');
+      inner.style.animationDuration = `${3 + Math.random() * 3}s`;
+      inner.innerHTML = `<svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M7 0C7 5 2 8 0 11C3 15 9 15 14 11C12 8 7 5 7 0Z" fill="#E7A3A8" fill-opacity="0.65"/></svg>`;
+      p.appendChild(inner);
+      container.appendChild(p);
+    }
+  }
+
+  window.onload = () => {
+    initPetals();
+    loadGame();
+    updateUI();
+  };
 </script>
 </body>
 </html>
