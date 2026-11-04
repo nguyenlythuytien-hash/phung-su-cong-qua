@@ -44,7 +44,7 @@
   }
   .font-serif { font-family: 'Playfair Display', Georgia, serif; }
 
-  /* ---------- Atmosphere ---------- */
+  /* Atmosphere */
   .bg-temple {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background:
@@ -53,41 +53,18 @@
       radial-gradient(ellipse 40% 35% at 0% 70%, rgba(231,163,168,.06), transparent 70%),
       linear-gradient(180deg, #22160F 0%, #1C120C 45%, #140D09 100%);
   }
-  .bg-temple::after {
-    content: ''; position: absolute; inset: 0; opacity: .5;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23D4AF37' stroke-opacity='.05'%3E%3Ccircle cx='60' cy='60' r='28'/%3E%3Ccircle cx='60' cy='60' r='40'/%3E%3Cpath d='M60 20v80M20 60h80'/%3E%3C/g%3E%3C/svg%3E");
-  }
   .grain {
     position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .07; mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* ---------- Falling lotus petals ---------- */
-  #petals { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
-  .petal { position: absolute; top: -8vh; will-change: transform; animation: petal-fall linear infinite; }
-  .petal > i { display: block; will-change: transform; animation: petal-sway ease-in-out infinite alternate; }
-  @keyframes petal-fall {
-    0% { transform: translate3d(0, 0, 0); opacity: 0; }
-    8% { opacity: var(--o, .8); }
-    90% { opacity: var(--o, .8); }
-    100% { transform: translate3d(var(--drift, 40px), 118vh, 0); opacity: 0; }
-  }
-  @keyframes petal-sway {
-    0% { transform: translateX(-26px) rotate(-35deg) rotateX(10deg); }
-    100% { transform: translateX(26px) rotate(55deg) rotateX(60deg); }
-  }
-
-  /* ---------- Panels ---------- */
+  /* Panels */
   .panel {
     position: relative;
     background: linear-gradient(160deg, rgba(58,39,26,.72), rgba(28,18,12,.86));
     border: 1px solid rgba(212,175,55,.22);
     box-shadow: 0 1px 0 rgba(241,215,138,.08) inset, 0 24px 50px -24px rgba(0,0,0,.7);
     backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-  }
-  .panel::before {
-    content: ''; position: absolute; inset: 6px; border: 1px solid rgba(212,175,55,.08); border-radius: inherit; pointer-events: none;
   }
   .corner { position: absolute; width: 18px; height: 18px; border-color: rgba(212,175,55,.55); pointer-events: none; }
   .corner.tl { top: 10px; left: 10px; border-top: 1px solid; border-left: 1px solid; }
@@ -105,704 +82,295 @@
     background: linear-gradient(180deg, #E8C960 0%, #D4AF37 50%, #A9861F 100%);
     color: #24170D; font-weight: 600; cursor: pointer;
     box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, 0 -2px 0 rgba(0,0,0,.18) inset, 0 8px 18px -8px rgba(212,175,55,.6);
-    transition: transform .15s ease, filter .2s ease, box-shadow .2s ease;
+    transition: transform .15s ease, filter .2s ease;
   }
   .btn-gold:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-1px); }
   .btn-gold:active:not(:disabled) { transform: translateY(1px) scale(.98); }
   .btn-gold:disabled { filter: grayscale(.7) brightness(.6); cursor: not-allowed; box-shadow: none; }
+
   .btn-ghost {
     border: 1px solid rgba(212,175,55,.4); color: var(--gold-light); cursor: pointer;
-    transition: background .2s ease, transform .15s ease;
+    transition: background .2s ease;
   }
-  .btn-ghost:hover:not(:disabled) { background: rgba(212,175,55,.1); }
-  .btn-ghost:active:not(:disabled) { transform: scale(.97); }
-  .btn-ghost:disabled { opacity: .45; cursor: not-allowed; }
-  :focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; border-radius: 8px; }
+  .btn-ghost:hover { background: rgba(212,175,55,.1); }
 
   /* EXP bar */
   .exp-track { background: rgba(0,0,0,.45); box-shadow: 0 1px 2px rgba(0,0,0,.6) inset; }
   .exp-fill {
     background: linear-gradient(90deg, #9C7A1E, #D4AF37 60%, #F7EBC4);
     transition: width .7s cubic-bezier(.2,.8,.2,1);
-    position: relative; overflow: hidden;
   }
-  .exp-fill::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
-    transform: translateX(-100%); animation: shimmer 2.8s ease-in-out infinite;
-  }
-  @keyframes shimmer { 60%, 100% { transform: translateX(100%); } }
 
-  /* Instruments */
-  .instrument { cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation; position: relative; }
-  .instrument svg { transition: transform .12s ease; transform-origin: 50% 70%; }
-  .instrument:active svg { transform: scale(.95); }
-  .mallet { transform-origin: 85% 15%; transition: transform .08s ease-out; }
-  .mallet.strike { transform: rotate(-24deg); }
-  .striker { transition: transform .12s ease-out; }
-  .striker.strike { transform: translateX(16px); }
+  .instrument { cursor: pointer; user-select: none; position: relative; }
   .halo { position: absolute; inset: 12% 8%; border-radius: 50%; background: radial-gradient(circle, rgba(212,175,55,.22), transparent 65%); pointer-events: none; }
 
   .float-merit {
     position: absolute; pointer-events: none; z-index: 30; white-space: nowrap;
     font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem;
-    color: #F7EBC4; text-shadow: 0 2px 10px rgba(212,175,55,.85), 0 0 2px #6b4f12;
+    color: #F7EBC4; text-shadow: 0 2px 10px rgba(212,175,55,.85);
     animation: float-up 1.15s cubic-bezier(.2,.7,.3,1) forwards;
   }
   @keyframes float-up {
     0% { transform: translate(-50%, 0) scale(.7); opacity: 0; }
     15% { transform: translate(-50%, -10px) scale(1.1); opacity: 1; }
-    100% { transform: translate(calc(-50% + var(--dx, 0px)), -90px) scale(1); opacity: 0; }
+    100% { transform: translate(-50%, -90px) scale(1); opacity: 0; }
   }
 
-  /* Fortune card */
-  .card-scene { perspective: 1400px; }
-  .card-inner { position: relative; transform-style: preserve-3d; transition: transform 1s cubic-bezier(.3,1.3,.4,1); }
-  .card-inner.flipped { transform: rotateY(180deg); }
-  .card-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 1.25rem; overflow: hidden; }
-  .card-front { transform: rotateY(180deg); }
-  .card-back-pattern {
-    background:
-      radial-gradient(circle at 50% 50%, rgba(212,175,55,.25), transparent 55%),
-      repeating-conic-gradient(from 0deg at 50% 50%, rgba(212,175,55,.08) 0 10deg, transparent 10deg 20deg),
-      linear-gradient(160deg, #4E3524, #1C120C);
-  }
-  .card-paper {
-    background:
-      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.5), transparent 60%),
-      linear-gradient(170deg, #F7EBC4, #E9D49A 70%, #D9BE74);
-    color: #3A271A;
-  }
-
-  /* Toast & modal */
+  /* Toast */
   .toast { animation: toast-in .4s cubic-bezier(.2,.9,.3,1.2) forwards; }
-  .toast.out { animation: toast-out .35s ease forwards; }
   @keyframes toast-in { from { transform: translateY(-16px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
-  @keyframes toast-out { to { transform: translateY(-10px); opacity: 0; } }
-
-  .reveal { opacity: 0; transform: translateY(18px); animation: reveal .8s cubic-bezier(.2,.8,.2,1) forwards; }
-  @keyframes reveal { to { opacity: 1; transform: none; } }
 </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-gold selection:text-wood">
 
 <div class="bg-temple"></div>
 <div class="grain"></div>
-<div id="petals" aria-hidden="true"></div>
 
-<!-- Toasts -->
 <div id="toasts" class="fixed top-3 left-1/2 -translate-x-1/2 z-[70] flex flex-col items-center gap-2 w-[min(92vw,380px)] pointer-events-none"></div>
 
-<div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pb-16" style="padding-top: max(env(safe-area-inset-top), 0px);">
+<div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pb-16 pt-6">
 
-  <!-- ===== Header ===== -->
-  <header class="pt-6 sm:pt-10 pb-6 reveal">
+  <!-- Header -->
+  <header class="pb-6">
     <div class="flex items-center gap-3 sm:gap-4">
       <svg class="w-11 h-11 sm:w-14 sm:h-14 shrink-0" viewBox="0 0 64 64" aria-hidden="true">
         <defs><linearGradient id="lg-logo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7EBC4"/><stop offset="1" stop-color="#B08A27"/></linearGradient></defs>
         <g fill="none" stroke="url(#lg-logo)" stroke-width="2" stroke-linejoin="round">
           <path d="M32 12c6 7 7 16 0 26-7-10-6-19 0-26z" fill="rgba(212,175,55,.18)"/>
-          <path d="M32 38c-4-9-12-14-20-14 1 9 9 15 20 14z"/>
-          <path d="M32 38c4-9 12-14 20-14-1 9-9 15-20 14z"/>
-          <path d="M32 38c-8-2-16-1-24 4 8 4 17 4 24-4z"/>
-          <path d="M32 38c8-2 16-1 24 4-8 4-17 4-24-4z"/>
           <path d="M14 48h36" stroke-linecap="round"/>
         </g>
       </svg>
-      <div class="min-w-0">
+      <div>
         <p class="text-[10px] sm:text-xs tracking-[.35em] uppercase text-gold/70">Nam Mô Bổn Sư Thích Ca Mâu Ni Phật</p>
         <h1 class="font-serif text-2xl sm:text-4xl leading-tight gold-text font-bold">Phụng Sự &amp; Công Quả</h1>
       </div>
-      <button id="soundBtn" class="ml-auto btn-ghost rounded-full w-10 h-10 grid place-items-center shrink-0 cursor-pointer" aria-label="Bật/tắt âm thanh" title="Âm thanh">
-        <svg id="soundOn" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
-        <svg id="soundOff" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
-      </button>
     </div>
   </header>
 
-  <!-- ===== Status bar ===== -->
-  <section class="panel rounded-3xl p-5 sm:p-7 reveal" style="animation-delay:.08s" aria-label="Thanh trạng thái Phật tử">
+  <!-- Status bar -->
+  <section class="panel rounded-3xl p-5 sm:p-7 mb-6">
     <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
     <div class="grid gap-5 md:grid-cols-[auto_1fr_auto] md:items-center">
       <div class="flex items-center gap-4">
-        <div class="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-full grid place-items-center" style="background: radial-gradient(circle at 35% 30%, #4E3524, #1C120C); box-shadow: 0 0 0 2px #D4AF37, 0 0 0 5px rgba(212,175,55,.15), 0 10px 30px -10px rgba(212,175,55,.6);">
-          <svg class="w-10 h-10 sm:w-12 sm:h-12" viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="24" cy="15" r="6.5" fill="rgba(212,175,55,.15)"/><path d="M24 4.5c1.6 0 2.4 1.4 2.4 3" stroke-linecap="round"/><path d="M11 42c0-8 5.5-14 13-14s13 6 13 14" fill="rgba(212,175,55,.1)"/><path d="M16 42c2-3 5-4 8-4s6 1 8 4"/></g></svg>
-          <span id="levelBadge" class="absolute -bottom-1 -right-1 min-w-[28px] h-7 px-1.5 rounded-full btn-gold grid place-items-center text-xs font-bold">1</span>
+        <div class="relative w-16 h-16 rounded-full grid place-items-center bg-[#1C120C] border-2 border-gold">
+          <span id="levelBadge" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full btn-gold grid place-items-center text-xs font-bold">1</span>
         </div>
-        <div class="min-w-0">
-          <p class="text-xs text-gold/70 tracking-wider uppercase">Pháp danh</p>
-          <button id="nameBtn" class="group flex items-center gap-2 text-left cursor-pointer" aria-label="Đổi pháp danh">
-            <span id="dharmaName" class="font-serif text-xl sm:text-2xl font-semibold text-gold-pale truncate max-w-[14rem]">Thiện Tâm</span>
-            <svg class="w-4 h-4 text-gold/60 group-hover:text-gold transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>
-          </button>
+        <div>
+          <p class="text-xs text-gold/70 uppercase">Pháp danh</p>
+          <button id="nameBtn" class="font-serif text-xl font-semibold text-gold-pale cursor-pointer">Thiện Tâm ✏️</button>
           <p id="rankTitle" class="text-sm text-lotus/90 italic">Sơ Phát Tâm</p>
         </div>
       </div>
 
       <div class="md:px-6">
-        <div class="flex items-baseline justify-between text-sm mb-2">
-          <span class="text-cream/80">Cấp <strong id="levelNum" class="text-gold-light font-serif text-lg">1</strong></span>
-          <span class="text-cream/60 tabular-nums"><span id="expNow">0</span> / <span id="expNeed">120</span> EXP</span>
+        <div class="flex justify-between text-sm mb-2">
+          <span class="text-cream/80">Cấp <strong id="levelNum" class="text-gold-light">1</strong></span>
+          <span class="text-cream/60"><span id="expNow">0</span> / <span id="expNeed">120</span> EXP</span>
         </div>
-        <div class="exp-track h-3.5 rounded-full overflow-hidden" role="progressbar" aria-label="Thanh kinh nghiệm" aria-valuemin="0" aria-valuemax="100" id="expBar">
+        <div class="exp-track h-3.5 rounded-full overflow-hidden">
           <div id="expFill" class="exp-fill h-full rounded-full" style="width:0%"></div>
         </div>
-        <p id="nextRank" class="text-xs text-cream/50 mt-2">Còn 120 EXP để thăng cấp</p>
       </div>
 
-      <div class="flex md:flex-col gap-3 md:gap-1 items-center md:items-end justify-between md:justify-center rounded-2xl md:rounded-none bg-black/20 md:bg-transparent px-4 py-3 md:p-0">
-        <p class="text-xs text-gold/70 tracking-wider uppercase">Điểm Công Đức</p>
-        <div class="flex items-center gap-2">
-          <svg class="w-7 h-7" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="#D4AF37"/><circle cx="16" cy="16" r="10.5" fill="none" stroke="#7a5d14" stroke-width="1"/><path d="M16 8c2.5 3 3 6.5 0 10.5-3-4-2.5-7.5 0-10.5zM16 18.5c-1.8-3.5-5-5-8-5 .4 3.5 3.5 5.6 8 5zM16 18.5c1.8-3.5 5-5 8-5-.4 3.5-3.5 5.6-8 5z" fill="#5a420c"/><path d="M10 23h12" stroke="#5a420c" stroke-width="1.4" stroke-linecap="round"/></svg>
-          <span id="meritNum" class="font-serif text-3xl sm:text-4xl font-bold gold-text tabular-nums">0</span>
-        </div>
+      <div class="flex md:flex-col items-center justify-between bg-black/20 md:bg-transparent px-4 py-3 rounded-2xl">
+        <p class="text-xs text-gold/70 uppercase">Điểm Công Đức</p>
+        <span id="meritNum" class="font-serif text-3xl font-bold gold-text">0</span>
       </div>
     </div>
-    <div class="divider my-5"></div>
-    <dl class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-      <div><dt class="text-[11px] uppercase tracking-wider text-cream/50">Tiếng mõ</dt><dd id="statMo" class="font-serif text-xl text-gold-light tabular-nums">0</dd></div>
-      <div><dt class="text-[11px] uppercase tracking-wider text-cream/50">Hồi chuông</dt><dd id="statBell" class="font-serif text-xl text-gold-light tabular-nums">0</dd></div>
-      <div><dt class="text-[11px] uppercase tracking-wider text-cream/50">Việc công quả</dt><dd id="statQuest" class="font-serif text-xl text-gold-light tabular-nums">0</dd></div>
-      <div><dt class="text-[11px] uppercase tracking-wider text-cream/50">Tổng công đức</dt><dd id="statTotal" class="font-serif text-xl text-gold-light tabular-nums">0</dd></div>
-    </dl>
   </section>
 
-  <!-- ===== Main grid ===== -->
-  <div class="mt-6 grid gap-6 lg:grid-cols-12">
-
+  <!-- Instruments & Quests Grid -->
+  <div class="grid gap-6 lg:grid-cols-12">
     <!-- Mõ & Chuông -->
-    <section class="panel rounded-3xl p-5 sm:p-7 lg:col-span-7 reveal" style="animation-delay:.16s" aria-labelledby="h-instruments">
+    <section class="panel rounded-3xl p-5 sm:p-7 lg:col-span-6 text-center">
       <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-      <div class="flex items-end justify-between gap-3 mb-2">
-        <div>
-          <p class="text-xs tracking-[.3em] uppercase text-gold/60">Pháp khí</p>
-          <h2 id="h-instruments" class="font-serif text-2xl sm:text-3xl text-gold-pale">Gõ Mõ &amp; Ngân Chuông</h2>
-        </div>
-        <div class="text-right">
-          <p class="text-[11px] text-cream/50 uppercase tracking-wider">Chuỗi niệm</p>
-          <p class="font-serif text-xl text-gold-light tabular-nums"><span id="combo">0</span><span class="text-sm text-cream/50"> ×</span></p>
-        </div>
+      <h2 class="font-serif text-2xl text-gold-pale mb-4">Gõ Mõ &amp; Ngân Chuông</h2>
+      <div class="flex justify-center gap-6">
+        <button id="moArea" class="instrument p-6 rounded-2xl bg-black/30 border border-gold/20 hover:border-gold">
+          <div class="text-4xl mb-2">🪵</div>
+          <span class="text-sm font-bold text-gold-light">Gõ Mõ (+1 CĐ)</span>
+        </button>
+        <button id="bellArea" class="instrument p-6 rounded-2xl bg-black/30 border border-gold/20 hover:border-gold">
+          <div class="text-4xl mb-2">🔔</div>
+          <span class="text-sm font-bold text-gold-light">Ngân Chuông (+2 CĐ)</span>
+        </button>
       </div>
-      <p class="text-sm text-cream/60 mb-4">Mỗi tiếng mõ, mỗi hồi chuông là một niệm thiện lành. Gõ liên tục để nối dài chuỗi niệm — cứ 108 tiếng được thưởng thêm công đức.</p>
-
-      <div class="grid grid-cols-2 gap-3 sm:gap-6">
-        <!-- Mõ -->
-        <div>
-          <div id="moArea" class="instrument aspect-square rounded-2xl bg-black/20 border border-gold/10 grid place-items-center overflow-hidden" role="button" tabindex="0" aria-label="Gõ mõ">
-            <div class="halo"></div>
-            <svg id="moSvg" viewBox="0 0 220 220" class="w-[88%] h-[88%] relative" aria-hidden="true">
-              <defs>
-                <radialGradient id="g-mo" cx="38%" cy="32%" r="75%">
-                  <stop offset="0" stop-color="#C06A3A"/><stop offset=".45" stop-color="#8A3E1E"/><stop offset="1" stop-color="#3E1A0C"/>
-                </radialGradient>
-                <linearGradient id="g-cush" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B8322A"/><stop offset="1" stop-color="#6E1813"/></linearGradient>
-                <linearGradient id="g-mallet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D9B57A"/><stop offset="1" stop-color="#7A5530"/></linearGradient>
-              </defs>
-              <ellipse cx="108" cy="182" rx="80" ry="16" fill="url(#g-cush)"/>
-              <path d="M30 180q78 18 156 0" stroke="#D4AF37" stroke-width="2" fill="none" opacity=".7"/>
-              <ellipse cx="108" cy="190" rx="70" ry="6" fill="#000" opacity=".25"/>
-              <path d="M40 120c0-40 30-68 70-68s70 28 70 68c0 32-30 56-70 56S40 152 40 120z" fill="url(#g-mo)"/>
-              <path d="M46 130c10 22 36 38 64 38s54-16 64-38" fill="none" stroke="#2a0f06" stroke-width="2" opacity=".5"/>
-              <path d="M58 128c14 8 32 12 52 12s38-4 52-12" fill="none" stroke="#1a0904" stroke-width="7" stroke-linecap="round"/>
-              <g fill="none" stroke="#D4AF37" stroke-width="1.6" opacity=".75">
-                <path d="M82 84q8-8 16 0M98 84q8-8 16 0M114 84q8-8 16 0"/>
-                <path d="M90 98q8-8 16 0M106 98q8-8 16 0"/>
-                <circle cx="70" cy="104" r="7"/><circle cx="70" cy="104" r="2.5" fill="#D4AF37"/>
-                <circle cx="150" cy="104" r="7"/><circle cx="150" cy="104" r="2.5" fill="#D4AF37"/>
-              </g>
-              <path d="M92 56c0-12 8-18 18-18s18 6 18 18" fill="none" stroke="#5a2410" stroke-width="9" stroke-linecap="round"/>
-              <ellipse cx="88" cy="80" rx="22" ry="10" fill="#fff" opacity=".12" transform="rotate(-20 88 80)"/>
-              <g id="mallet" class="mallet">
-                <path d="M200 30L140 82" stroke="url(#g-mallet)" stroke-width="7" stroke-linecap="round"/>
-                <ellipse cx="136" cy="86" rx="14" ry="11" fill="#8A3E1E" transform="rotate(-40 136 86)"/>
-                <ellipse cx="132" cy="83" rx="6" ry="4" fill="#fff" opacity=".18" transform="rotate(-40 132 83)"/>
-              </g>
-            </svg>
-          </div>
-          <p class="text-center mt-3 font-serif text-lg text-gold-light">Mõ Gỗ</p>
-          <p class="text-center text-xs text-cream/50">+1 công đức · +1 EXP</p>
-        </div>
-
-        <!-- Chuông -->
-        <div>
-          <div id="bellArea" class="instrument aspect-square rounded-2xl bg-black/20 border border-gold/10 grid place-items-center overflow-hidden" role="button" tabindex="0" aria-label="Ngân chuông Bát Nhã">
-            <div class="halo"></div>
-            <svg viewBox="0 0 220 220" class="w-[88%] h-[88%] relative" aria-hidden="true">
-              <defs>
-                <linearGradient id="g-bell" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0" stop-color="#6b4f12"/><stop offset=".3" stop-color="#E8C960"/><stop offset=".5" stop-color="#F7EBC4"/><stop offset=".7" stop-color="#D4AF37"/><stop offset="1" stop-color="#5a420c"/>
-                </linearGradient>
-                <linearGradient id="g-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E4A2E"/><stop offset="1" stop-color="#3A271A"/></linearGradient>
-              </defs>
-              <rect x="18" y="12" width="184" height="12" rx="4" fill="url(#g-beam)"/>
-              <path d="M14 12q96-14 192 0" stroke="#D4AF37" stroke-width="2" fill="none"/>
-              <g id="bellBody">
-                <rect x="104" y="24" width="12" height="14" fill="#7a5d14"/>
-                <path d="M96 38h28q4 0 4 4v4H92v-4q0-4 4-4z" fill="url(#g-bell)"/>
-                <path d="M70 60q0-14 40-14t40 14v96q0 8 10 14H60q10-6 10-14z" fill="url(#g-bell)"/>
-                <rect x="56" y="168" width="108" height="10" rx="3" fill="url(#g-bell)"/>
-                <g stroke="#7a5d14" stroke-width="1.6" fill="none" opacity=".85">
-                  <path d="M70 80h80M70 86h80M70 140h80M70 146h80"/>
-                  <path d="M110 86v54"/>
-                </g>
-                <g fill="none" stroke="#7a5d14" stroke-width="1.2" opacity=".8">
-                  <rect x="78" y="94" width="24" height="38" rx="2"/>
-                  <rect x="118" y="94" width="24" height="38" rx="2"/>
-                </g>
-                <g fill="#7a5d14" opacity=".75">
-                  <rect x="86" y="100" width="8" height="3" rx="1"/><rect x="86" y="108" width="8" height="3" rx="1"/><rect x="86" y="116" width="8" height="3" rx="1"/><rect x="86" y="124" width="8" height="3" rx="1"/>
-                </g>
-                <path d="M130 104c3 4 3 8 0 13-3-5-3-9 0-13zM130 117c-2-4-6-6-9-6 .5 4 4 6 9 6zM130 117c2-4 6-6 9-6-.5 4-4 6-9 6z" fill="#7a5d14"/>
-                <circle cx="110" cy="156" r="6" fill="none" stroke="#7a5d14" stroke-width="1.5"/>
-                <path d="M78 60q-2 50 2 90" stroke="#fff" stroke-width="5" opacity=".18" stroke-linecap="round"/>
-              </g>
-              <g id="striker" class="striker">
-                <path d="M2 152h4" stroke="#3A271A" stroke-width="2"/>
-                <path d="M4 24v116M30 24v116" stroke="#3A271A" stroke-width="1.5" opacity=".9"/>
-                <rect x="-6" y="140" width="56" height="18" rx="9" fill="#8B5E3C"/>
-                <rect x="-6" y="140" width="56" height="6" rx="3" fill="#fff" opacity=".12"/>
-                <circle cx="44" cy="149" r="6" fill="#6E4A2E" stroke="#3A271A"/>
-              </g>
-            </svg>
-          </div>
-          <p class="text-center mt-3 font-serif text-lg text-gold-light">Chuông Bát Nhã</p>
-          <p class="text-center text-xs text-cream/50">+1 công đức · +2 EXP</p>
-        </div>
-      </div>
-      <p class="mt-4 text-center text-xs text-cream/40">Mẹo: trên máy tính, nhấn phím <kbd class="px-1.5 py-0.5 rounded border border-gold/30 text-gold-light">M</kbd> để gõ mõ, <kbd class="px-1.5 py-0.5 rounded border border-gold/30 text-gold-light">C</kbd> để ngân chuông.</p>
     </section>
 
-    <!-- Gieo Quẻ -->
-    <section class="panel rounded-3xl p-5 sm:p-7 lg:col-span-5 reveal flex flex-col" style="animation-delay:.24s" aria-labelledby="h-fortune">
+    <!-- Nhiệm vụ tích hợp MINI-GAME -->
+    <section class="panel rounded-3xl p-5 sm:p-7 lg:col-span-6">
       <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-      <p class="text-xs tracking-[.3em] uppercase text-gold/60">Mỗi ngày một lần</p>
-      <h2 id="h-fortune" class="font-serif text-2xl sm:text-3xl text-gold-pale">Gieo Quẻ Bồ Đề</h2>
-      <p class="text-sm text-cream/60 mt-1 mb-5">Tĩnh tâm, chắp tay, rồi rút một quẻ. Lời Phật dạy hôm nay sẽ đến với bạn cùng điểm thưởng.</p>
-
-      <div class="card-scene mx-auto w-full max-w-[300px] flex-1 min-h-[360px]">
-        <div id="card" class="card-inner w-full h-full min-h-[360px]">
-          <!-- back -->
-          <div class="card-face card-back-pattern border border-gold/40 grid place-items-center">
-            <div class="absolute inset-3 rounded-xl border border-gold/30"></div>
-            <div class="absolute inset-5 rounded-lg border border-gold/15"></div>
-            <div class="text-center relative">
-              <svg class="w-24 h-24 mx-auto" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="#D4AF37" stroke-width="1.4"><circle cx="32" cy="32" r="28" stroke-opacity=".4"/><circle cx="32" cy="32" r="22" stroke-dasharray="2 3"/><path d="M32 14c5 6 6 13 0 21-6-8-5-15 0-21z" fill="rgba(212,175,55,.25)"/><path d="M32 35c-3-7-10-11-16-11 1 7 7 12 16 11zM32 35c3-7 10-11 16-11-1 7-7 12-16 11z"/><path d="M32 35c-7-1-13 0-19 3 6 3 13 3 19-3zM32 35c7-1 13 0 19 3-6 3-13 3-19-3z"/><path d="M20 46h24" stroke-linecap="round"/></g></svg>
-              <p class="font-serif text-2xl gold-text mt-3 font-bold">Quẻ Bồ Đề</p>
-              <p class="text-xs tracking-[.3em] text-gold/60 mt-1">菩 提</p>
-            </div>
-          </div>
-          <!-- front -->
-          <div class="card-face card-front card-paper p-6 flex flex-col shadow-2xl">
-            <div class="absolute inset-3 rounded-xl border border-[#9C7A1E]/40 pointer-events-none"></div>
-            <p id="fortuneNo" class="text-center text-[11px] tracking-[.3em] uppercase text-[#9C7A1E] font-semibold">Quẻ số 01</p>
-            <p id="fortuneType" class="text-center font-serif text-xl font-bold text-[#6b2b16] mt-1">Thượng Cát</p>
-            <div class="mx-auto my-3 w-16 h-px bg-[#9C7A1E]/60"></div>
-            <blockquote id="fortuneQuote" class="font-serif italic text-[1.05rem] leading-relaxed text-center flex-1 grid place-items-center text-[#3A271A]">…</blockquote>
-            <p id="fortuneSrc" class="text-center text-xs text-[#6E4A2E] mt-3">— Kinh Pháp Cú</p>
-            <div class="mt-3 rounded-lg bg-[#6b2b16] text-[#F7EBC4] text-center py-2 text-sm font-semibold" id="fortuneBonus">+20 công đức</div>
-          </div>
-        </div>
-      </div>
-
-      <button id="drawBtn" class="btn-gold mt-6 w-full rounded-xl py-3.5 text-base flex items-center justify-center gap-2 cursor-pointer">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3"/><circle cx="12" cy="12" r="3.5"/></svg>
-        <span id="drawLabel">Rút Quẻ</span>
-      </button>
-      <p id="drawHint" class="text-center text-xs text-cream/50 mt-2">Quẻ mới sẽ mở lại vào 00:00 mỗi ngày</p>
-    </section>
-
-    <!-- Nhiệm vụ công quả tích hợp Mini-game -->
-    <section class="panel rounded-3xl p-5 sm:p-7 lg:col-span-7 reveal" style="animation-delay:.32s" aria-labelledby="h-quests">
-      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-      <div class="flex flex-wrap items-end justify-between gap-3 mb-5">
-        <div>
-          <p class="text-xs tracking-[.3em] uppercase text-gold/60">Hằng ngày</p>
-          <h2 id="h-quests" class="font-serif text-2xl sm:text-3xl text-gold-pale">Nhiệm Vụ Công Quả</h2>
-        </div>
-        <p class="text-xs text-cream/60">Hoàn thành các việc thiện để tích lũy phước đức</p>
-      </div>
-
+      <h2 class="font-serif text-2xl text-gold-pale mb-2">Nhiệm Vụ &amp; Mini-Game</h2>
+      <p class="text-xs text-cream/60 mb-4">Bấm "Chơi Ngay" để làm nhiệm vụ tương tác trực tiếp!</p>
+      
       <div id="questList" class="space-y-3">
         <!-- Rendered by JS -->
       </div>
     </section>
-
   </div>
 </div>
 
-<!-- MINI-GAME POPUP MODAL -->
+<!-- POPUP MINI-GAME -->
 <div id="minigameModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-  <div class="panel rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl relative border border-gold/40">
-    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="panel rounded-2xl max-w-md w-full p-6 text-center space-y-4 relative border border-gold/40">
     <h3 id="mgTitle" class="font-serif text-2xl font-bold text-gold-pale">Tên Mini-Game</h3>
     <p id="mgDesc" class="text-xs text-cream/70">Hướng dẫn chơi...</p>
 
-    <div id="mgPlayArea" class="bg-black/40 border border-gold/20 rounded-xl h-52 flex flex-col items-center justify-center relative overflow-hidden select-none">
-      <!-- Nội dung game động -->
+    <div id="mgPlayArea" class="bg-black/50 border border-gold/30 rounded-xl h-48 flex items-center justify-center relative overflow-hidden select-none">
+      <!-- Vùng chơi game -->
     </div>
 
     <div class="flex justify-between items-center text-xs text-gold">
-      <span id="mgProgress" class="font-semibold">Tiến độ: 0/5</span>
-      <button onclick="closeMinigame()" class="btn-ghost px-4 py-1.5 rounded-lg cursor-pointer">Đóng</button>
+      <span id="mgProgress" class="font-semibold text-sm">Tiến độ: 0/5</span>
+      <button onclick="closeMinigame()" class="btn-ghost px-4 py-2 rounded-lg">Đóng</button>
     </div>
   </div>
 </div>
 
-<!-- SCRIPT LOGIC -->
 <script>
-  // Web Audio API Sound Engine
   let audioCtx = null;
-  let soundEnabled = true;
-
-  function initAudio() {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-  }
-
   function playSound(type) {
-    if (!soundEnabled) return;
     try {
-      initAudio();
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.connect(gain);
       gain.connect(audioCtx.destination);
-
       if (type === 'mo') {
-        osc.type = 'triangle';
         osc.frequency.setValueAtTime(220, audioCtx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.9, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.15);
-      } else if (type === 'chuong') {
-        osc.type = 'sine';
+      } else {
         osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 2.2);
-        gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.5);
-        osc.start(); osc.stop(audioCtx.currentTime + 2.5);
-      } else if (type === 'success') {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + 1.2);
-        gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-        osc.start(); osc.stop(audioCtx.currentTime + 1.5);
+        osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 1.5);
       }
+      gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+      osc.start(); osc.stop(audioCtx.currentTime + 1.5);
     } catch(e) {}
   }
 
-  // State
   let state = {
     name: 'Thiện Tâm',
     merit: 0,
     exp: 0,
     level: 1,
-    moCount: 0,
-    bellCount: 0,
-    questCount: 0,
-    combo: 0,
-    drawnToday: false,
     quests: [
-      { id: 1, title: "Quét dọn Chánh Điện", type: "sweep", rewardMerit: 20, rewardExp: 40, target: 5, done: false },
-      { id: 2, title: "Phụ bếp Trai đường", type: "catch", rewardMerit: 25, rewardExp: 50, target: 5, done: false },
-      { id: 3, title: "Hỗ trợ bãi xe", type: "parking", rewardMerit: 15, rewardExp: 30, target: 5, done: false },
-      { id: 4, title: "Lạy Phật sám hối", type: "bow", rewardMerit: 30, rewardExp: 60, target: 6, done: false },
-      { id: 5, title: "Tụng kinh niệm Phật", type: "tap", rewardMerit: 35, rewardExp: 70, target: 8, done: false }
+      { id: 1, title: "Quét dọn Chánh Điện", type: "sweep", merit: 20, exp: 40, target: 5, done: false },
+      { id: 2, title: "Phụ bếp Trai đường", type: "catch", merit: 25, exp: 50, target: 5, done: false },
+      { id: 3, title: "Hỗ trợ bãi xe", type: "parking", merit: 15, rank: 30, target: 5, done: false },
+      { id: 4, title: "Lạy Phật sám hối", type: "bow", merit: 30, exp: 60, target: 5, done: false }
     ]
   };
 
-  const ranks = [
-    { title: "Sơ Phát Tâm", need: 120 },
-    { title: "Tinh Tấn Hạnh", need: 300 },
-    { title: "Bồ Đề Hạnh", need: 600 },
-    { title: "Vô Lượng Phước Điền", need: 1000 }
-  ];
-
-  const fortunes = [
-    { num: "01", type: "Thượng Cát", quote: "Tâm bình thế giới bình, tâm trí huệ chiếu soi muôn nơi.", src: "Kinh Pháp Cú", bonus: 20 },
-    { num: "02", type: "Đại Cát", quote: "Nói lời ôn hòa, gieo hạt giống từ bi vào lòng người.", src: "Kinh Tăng Thường Bộ", bonus: 25 },
-    { num: "03", type: "Cát Tường", quote: "Không làm các điều ác, nguyện làm các việc lành.", src: "Kinh Pháp Cú", bonus: 20 }
-  ];
-
-  // UI updates
   function updateUI() {
-    document.getElementById('dharmaName').innerText = state.name;
+    document.getElementById('dharmaName') ? document.getElementById('dharmaName').innerText = state.name : null;
     document.getElementById('meritNum').innerText = state.merit;
     document.getElementById('levelNum').innerText = state.level;
     document.getElementById('levelBadge').innerText = state.level;
-    document.getElementById('statMo').innerText = state.moCount;
-    document.getElementById('statBell').innerText = state.bellCount;
-    document.getElementById('statQuest').innerText = state.questCount;
-    document.getElementById('statTotal').innerText = state.merit;
-    document.getElementById('combo').innerText = state.combo;
-
-    const rankObj = ranks[Math.min(state.level - 1, ranks.length - 1)];
-    document.getElementById('rankTitle').innerText = rankObj.title;
     document.getElementById('expNow').innerText = state.exp;
-    document.getElementById('expNeed').innerText = rankObj.need;
+    document.getElementById('expFill').style.width = Math.min(100, (state.exp / 120) * 100) + '%';
     
-    const pct = Math.min(100, (state.exp / rankObj.need) * 100);
-    document.getElementById('expFill').style.width = pct + '%';
-
     renderQuests();
   }
 
-  function addMerit(amount, expAdd, x, y) {
-    state.merit += amount;
-    state.exp += expAdd;
-    checkLevelUp();
+  function addMerit(m, e, x, y) {
+    state.merit += m;
+    state.exp += e;
+    if (state.exp >= 120) { state.level++; state.exp = 0; }
     updateUI();
-    if (x && y) showFloat(amount, x, y);
-  }
-
-  function checkLevelUp() {
-    const rankObj = ranks[Math.min(state.level - 1, ranks.length - 1)];
-    if (state.exp >= rankObj.need) {
-      state.level++;
-      showToast(`Nam Mô A Di Đà Phật! Đã thăng cấp lên Lv.${state.level}! 🎉`, 'gold');
+    if (x && y) {
+      const el = document.createElement('div');
+      el.className = 'float-merit';
+      el.innerText = `+${m} CĐ`;
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1150);
     }
   }
 
-  function showFloat(amount, x, y) {
-    const el = document.createElement('div');
-    el.className = 'float-merit';
-    el.innerText = `+${amount} CĐ`;
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 1150);
-  }
-
-  function showToast(msg, type = 'normal') {
-    const c = document.getElementById('toasts');
-    const t = document.createElement('div');
-    t.className = `toast px-4 py-3 rounded-xl border text-sm font-medium shadow-xl pointer-events-auto flex items-center gap-2 ${
-      type === 'gold' ? 'bg-[#3A271A] border-gold text-gold-pale' : 'bg-[#1C120C] border-gold/35 text-cream'
-    }`;
-    t.innerHTML = `<span>${msg}</span>`;
-    c.appendChild(t);
-    setTimeout(() => {
-      t.classList.add('out');
-      setTimeout(() => t.remove(), 350);
-    }, 2800);
-  }
-
-  // Instrument Interactivity
   document.getElementById('moArea').addEventListener('click', (e) => {
     playSound('mo');
-    state.moCount++;
-    state.combo++;
-    const rect = e.currentTarget.getBoundingClientRect();
-    addMerit(1, 1, rect.left + rect.width/2, rect.top);
+    const r = e.currentTarget.getBoundingClientRect();
+    addMerit(1, 1, r.left + r.width/2, r.top);
   });
 
   document.getElementById('bellArea').addEventListener('click', (e) => {
     playSound('chuong');
-    state.bellCount++;
-    state.combo++;
-    const rect = e.currentTarget.getBoundingClientRect();
-    addMerit(1, 2, rect.left + rect.width/2, rect.top);
+    const r = e.currentTarget.getBoundingClientRect();
+    addMerit(2, 2, r.left + r.width/2, r.top);
   });
 
-  // Fortune drawing
-  document.getElementById('drawBtn').addEventListener('click', () => {
-    if (state.drawnToday) {
-      showToast("Hôm nay bạn đã gieo quẻ rồi, hãy quay lại vào ngày mai nhé!");
-      return;
-    }
-    const f = fortunes[Math.floor(Math.random() * fortunes.length)];
-    document.getElementById('fortuneNo').innerText = `Quẻ số ${f.num}`;
-    document.getElementById('fortuneType').innerText = f.type;
-    document.getElementById('fortuneQuote').innerText = `"${f.quote}"`;
-    document.getElementById('fortuneSrc').innerText = `— ${f.src}`;
-    document.getElementById('fortuneBonus').innerText = `+${f.bonus} công đức`;
-
-    document.getElementById('card').classList.add('flipped');
-    state.drawnToday = true;
-    document.getElementById('drawBtn').disabled = true;
-    document.getElementById('drawLabel').innerText = "Đã gieo quẻ hôm nay";
-    playSound('chuong');
-    addMerit(f.bonus, f.bonus * 2);
-    showToast(`Nam Mô Phật! Nhận được quẻ ${f.type} (+${f.bonus} CĐ)`, 'gold');
-  });
-
-  // Quests & Mini-Games
   function renderQuests() {
     const list = document.getElementById('questList');
     list.innerHTML = state.quests.map(q => `
-      <div class="panel rounded-xl p-4 flex items-center justify-between gap-3 ${q.done ? 'opacity-60' : ''}">
+      <div class="panel rounded-xl p-3 flex items-center justify-between gap-3 ${q.done ? 'opacity-50' : ''}">
         <div>
           <h4 class="font-serif text-sm font-bold text-gold-pale">${q.title}</h4>
-          <p class="text-xs text-cream/60 mt-0.5">+${q.rewardMerit} Công Đức · +${q.rewardExp} EXP</p>
+          <p class="text-xs text-cream/60">+${q.merit} Công Đức · +${q.exp || 30} EXP</p>
         </div>
-        <button onclick="startMinigame(${q.id})" class="btn-gold px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer ${q.done ? 'opacity-50 cursor-not-allowed' : ''}" ${q.done ? 'disabled' : ''}>
-          ${q.done ? 'Đã hoàn thành' : 'Thực hiện'}
+        <button onclick="startMinigame(${q.id})" class="btn-gold px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer" ${q.done ? 'disabled' : ''}>
+          ${q.done ? 'Đã xong' : '🎮 Chơi Ngay'}
         </button>
       </div>
     `).join('');
   }
 
-  let currentQuest = null;
-  let mgScore = 0;
+  let currentQ = null;
+  let score = 0;
 
   function startMinigame(id) {
-    const q = state.quests.find(item => item.id === id);
-    if (!q || q.done) return;
-    currentQuest = q;
-    mgScore = 0;
-
+    currentQ = state.quests.find(q => q.id === id);
+    if (!currentQ || currentQ.done) return;
+    score = 0;
     document.getElementById('minigameModal').classList.remove('hidden');
-    document.getElementById('mgTitle').innerText = q.title;
-    setupMgArea();
+    document.getElementById('mgTitle').innerText = currentQ.title;
+    nextStep();
   }
 
-  function setupMgArea() {
+  function nextStep() {
     const area = document.getElementById('mgPlayArea');
     area.innerHTML = '';
-
-    if (currentQuest.type === 'sweep') {
-      document.getElementById('mgDesc').innerText = "Nhấp vào các lá rác xuất hiện để quét sạch chánh điện!";
-      document.getElementById('mgProgress').innerText = `Tiến độ: ${mgScore}/${currentQuest.target}`;
-      spawnDust();
-    } else if (currentQuest.type === 'catch') {
-      document.getElementById('mgDesc').innerText = "Nhấp vào các rau củ quả chay để soạn mâm cúng!";
-      document.getElementById('mgProgress').innerText = `Tiến độ: ${mgScore}/${currentQuest.target}`;
-      spawnVeggie();
-    } else if (currentQuest.type === 'parking') {
-      document.getElementById('mgDesc').innerText = "Nhấp vào các phương tiện để sắp xếp bãi xe tự viện!";
-      document.getElementById('mgProgress').innerText = `Tiến độ: ${mgScore}/${currentQuest.target}`;
-      spawnCar();
-    } else if (currentQuest.type === 'bow') {
-      document.getElementById('mgDesc').innerText = "Nhấp vào đóa hoa sen để thực hiện lạy Phật sám hối!";
-      document.getElementById('mgProgress').innerText = `Tiến độ: ${mgScore}/${currentQuest.target}`;
-      
-      const btn = document.createElement('button');
-      btn.className = 'w-16 h-16 rounded-full btn-gold text-2xl shadow-lg flex items-center justify-center cursor-pointer';
-      btn.innerHTML = '🪷';
-      btn.onclick = () => {
-        playSound('chuong');
-        mgScore++;
-        document.getElementById('mgProgress').innerText = `Tiến độ: ${mgScore}/${currentQuest.target}`;
-        if (mgScore >= currentQuest.target) completeQuest();
-      };
-      area.appendChild(btn);
-    } else if (currentQuest.type === 'tap') {
-      document.getElementById('mgDesc').innerText = "Gõ vào mõ nhịp nhàng để tụng kinh niệm Phật!";
-      document.getElementById('mgProgress').innerText = `Tiến độ: ${mgScore}/${currentQuest.target}`;
-      
-      const btn = document.createElement('button');
-      btn.className = 'w-16 h-16 rounded-full bg-wood-700 border border-gold text-gold text-2xl shadow-lg flex items-center justify-center cursor-pointer';
-      btn.innerHTML = '🪵';
-      btn.onclick = () => {
-        playSound('mo');
-        mgScore++;
-        document.getElementById('mgProgress').innerText = `Tiến độ: ${mgScore}/${currentQuest.target}`;
-        if (mgScore >= currentQuest.target) completeQuest();
-      };
-      area.appendChild(btn);
+    if (score >= currentQ.target) {
+      currentQ.done = true;
+      playSound('chuong');
+      addMerit(currentQ.merit, currentQ.exp || 30);
+      area.innerHTML = `<div class="text-gold font-serif text-xl">🎉 Nam Mô A Di Đà Phật! Hoàn thành công quả!</div>`;
+      setTimeout(() => closeMinigame(), 1500);
+      return;
     }
-  }
 
-  function spawnDust() {
-    if (!currentQuest || currentQuest.done || document.getElementById('minigameModal').classList.contains('hidden')) return;
-    const area = document.getElementById('mgPlayArea');
-    area.innerHTML = '';
-    const d = document.createElement('div');
-    d.className = 'absolute text-3xl cursor-pointer animate-bounce';
-    d.innerHTML = '🍂';
-    d.style.left = `${Math.random() * 70 + 15}%`;
-    d.style.top = `${Math.random() * 60 + 20}%`;
-    d.onclick = () => {
+    document.getElementById('mgDesc').innerText = `Nhấp vào vật phẩm xuất hiện để tích điểm (${score}/${currentQ.target})`;
+    document.getElementById('mgProgress').innerText = `Tiến độ: ${score}/${currentQ.target}`;
+
+    const icons = { sweep: '🍂', catch: '🥦', parking: '🚗', bow: '🪷' };
+    const item = document.createElement('div');
+    item.className = 'absolute text-4xl cursor-pointer animate-bounce';
+    item.innerHTML = icons[currentQ.type] || '✨';
+    item.style.left = `${Math.random() * 70 + 15}%`;
+    item.style.top = `${Math.random() * 60 + 15}%`;
+    
+    item.onclick = () => {
       playSound('mo');
-      mgScore++;
-      document.getElementById('mgProgress').innerText = `Tiến độ: ${mgScore}/${currentQuest.target}`;
-      if (mgScore >= currentQuest.target) completeQuest();
-      else spawnDust();
+      score++;
+      nextStep();
     };
-    area.appendChild(d);
-  }
-
-  function spawnVeggie() {
-    if (!currentQuest || currentQuest.done || document.getElementById('minigameModal').classList.contains('hidden')) return;
-    const area = document.getElementById('mgPlayArea');
-    area.innerHTML = '';
-    const items = ['🥦', '🥕', '🍎', '🥬'];
-    const it = document.createElement('div');
-    it.className = 'absolute text-3xl cursor-pointer transition transform hover:scale-125';
-    it.innerHTML = items[Math.floor(Math.random() * items.length)];
-    it.style.left = `${Math.random() * 70 + 15}%`;
-    it.style.top = `${Math.random() * 60 + 20}%`;
-    it.onclick = () => {
-      playSound('success');
-      mgScore++;
-      document.getElementById('mgProgress').innerText = `Tiến độ: ${mgScore}/${currentQuest.target}`;
-      if (mgScore >= currentQuest.target) completeQuest();
-      else spawnVeggie();
-    };
-    area.appendChild(it);
-  }
-
-  function spawnCar() {
-    if (!currentQuest || currentQuest.done || document.getElementById('minigameModal').classList.contains('hidden')) return;
-    const area = document.getElementById('mgPlayArea');
-    area.innerHTML = '';
-    const vehicles = ['🚗', '🛵', '🚲', '🚙'];
-    const v = document.createElement('div');
-    v.className = 'absolute text-3xl cursor-pointer transition transform hover:scale-125';
-    v.innerHTML = vehicles[Math.floor(Math.random() * vehicles.length)];
-    v.style.left = `${Math.random() * 70 + 15}%`;
-    v.style.top = `${Math.random() * 60 + 20}%`;
-    v.onclick = () => {
-      playSound('success');
-      mgScore++;
-      document.getElementById('mgProgress').innerText = `Tiến độ: ${mgScore}/${currentQuest.target}`;
-      if (mgScore >= currentQuest.target) completeQuest();
-      else spawnCar();
-    };
-    area.appendChild(v);
-  }
-
-  function completeQuest() {
-    currentQuest.done = true;
-    state.questCount++;
-    playSound('success');
-    addMerit(currentQuest.rewardMerit, currentQuest.rewardExp);
-    showToast(`Hoàn thành: ${currentQuest.title} (+${currentQuest.rewardMerit} CĐ)!`, 'gold');
-    closeMinigame();
-    updateUI();
+    area.appendChild(item);
   }
 
   function closeMinigame() {
     document.getElementById('minigameModal').classList.add('hidden');
-    currentQuest = null;
+    currentQ = null;
+    updateUI();
   }
 
-  // Name editing
   document.getElementById('nameBtn').addEventListener('click', () => {
-    const input = prompt("Nhập pháp danh mới của bạn:", state.name);
-    if (input && input.trim()) {
-      state.name = input.trim();
-      updateUI();
-      showToast("Đã cập nhật pháp danh thành công!");
-    }
+    const n = prompt("Nhập pháp danh mới:", state.name);
+    if (n) { state.name = n; updateUI(); }
   });
 
-  // Sound toggle
-  document.getElementById('soundBtn').addEventListener('click', () => {
-    soundEnabled = !soundEnabled;
-    document.getElementById('soundOn').classList.toggle('hidden', !soundEnabled);
-    document.getElementById('soundOff').classList.toggle('hidden', soundEnabled);
-    showToast(soundEnabled ? "Đã bật âm thanh" : "Đã tắt âm thanh");
-  });
-
-  // Init
-  window.addEventListener('DOMContentLoaded', () => {
-    updateUI();
-  });
+  window.onload = () => updateUI();
 </script>
 </body>
 </html>
